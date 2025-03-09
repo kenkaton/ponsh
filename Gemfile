@@ -33,6 +33,9 @@ gem "solid_cable"
 # Pagination
 gem "pagy"
 
+# Geocoding solution for address to coordinates
+gem "geocoder"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

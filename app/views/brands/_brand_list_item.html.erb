@@ -1,0 +1,13 @@
+<div id="<%= dom_id brand %>" class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50">
+  <div class="flex-1">
+    <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
+    <p class="text-sm text-gray-500"><%= brand.kana %></p>
+    <% if brand.company.present? %>
+      <p class="text-xs text-gray-400 mt-1"><%= brand.company.name %></p>
+    <% end %>
+  </div>
+  <div class="flex space-x-2">
+    <%= link_to "詳細", brand, class: "rounded-md px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-sm" %>
+    <%= link_to "編集", edit_brand_path(brand), class: "rounded-md px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 font-medium text-sm" %>
+  </div>
+</div>

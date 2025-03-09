@@ -22,7 +22,55 @@
     </div>
     <div>
       <strong class="block font-medium mb-1">Company:</strong>
-      <%= brand.company_id %>
+      <% if brand.company.present? %>
+        <div class="ml-4 space-y-2">
+          <div><strong>名前:</strong> <%= brand.company.name %></div>
+          <% if brand.company.address.present? %>
+            <div><strong>住所:</strong> <%= brand.company.address %></div>
+          <% end %>
+          <% if brand.company.tel.present? %>
+            <div><strong>電話番号:</strong> <%= brand.company.tel %></div>
+          <% end %>
+          <% if brand.company.website.present? %>
+            <div><strong>ウェブサイト:</strong> <%= link_to brand.company.website, brand.company.website, target: "_blank" %></div>
+          <% end %>
+          <%= link_to "会社の詳細を見る", brand.company, class: "text-blue-600 hover:underline" if defined?(company_path) %>
+
+          <% if brand.company.address.present? %>
+            <div class="mt-4">
+              <strong>地図:</strong>
+              <% if brand.company.google_map&.latitude.present? && brand.company.google_map&.longitude.present? %>
+                <% map_id = "map_#{brand.id}" %>
+                <div id="<%= map_id %>" class="w-full h-64 mt-2 border rounded shadow-sm"></div>
+                <script>
+                  document.addEventListener('turbo:load', function() {
+                    const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
+                      center: {
+                        lat: <%= brand.company.google_map.latitude %>,
+                        lng: <%= brand.company.google_map.longitude %>
+                      },
+                      zoom: 15
+                    });
+
+                    const marker = new google.maps.Marker({
+                      position: {
+                        lat: <%= brand.company.google_map.latitude %>,
+                        lng: <%= brand.company.google_map.longitude %>
+                      },
+                      map: map,
+                      title: '<%= brand.company.name %>'
+                    });
+                  });
+                </script>
+              <% else %>
+                <p class="text-gray-500">地図情報を読み込めません</p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <span class="text-gray-500">情報なし</span>
+      <% end %>
     </div>
   </div>
   <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">

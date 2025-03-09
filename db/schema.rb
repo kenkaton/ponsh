@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_09_092033) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_09_101629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,6 +59,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_09_092033) do
     t.index ["company_id", "occurred_on"], name: "index_company_status_histories_on_company_id_and_occurred_on"
     t.index ["company_id"], name: "index_company_status_histories_on_company_id"
     t.index ["successor_company_id"], name: "index_company_status_histories_on_successor_company_id"
+  end
+
+  create_table "google_maps", force: :cascade do |t|
+    t.string "gmappable_type", null: false
+    t.bigint "gmappable_id", null: false
+    t.string "address", null: false
+    t.float "latitude"
+    t.float "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gmappable_type", "gmappable_id"], name: "index_google_maps_on_gmappable"
   end
 
   add_foreign_key "brands", "companies"

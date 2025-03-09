@@ -5,14 +5,14 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center mb-6">
     <h1 class="font-bold text-4xl">Brands</h1>
     <%= link_to "New brand", new_brand_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
   </div>
 
-  <div id="brands" class="min-w-full divide-y divide-gray-200 space-y-5">
+  <div id="brands" class="space-y-4">
     <% if @brands.any? %>
-      <%= render partial: "brand", collection: @brands, as: :brand %>
+      <%= render partial: "brand_list_item", collection: @brands, as: :brand %>
     <% else %>
       <p class="text-center my-10">No brands found.</p>
     <% end %>
