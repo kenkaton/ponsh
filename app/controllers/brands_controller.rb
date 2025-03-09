@@ -3,7 +3,7 @@ class BrandsController < ApplicationController
 
   # GET /brands or /brands.json
   def index
-    @brands = Brand.all
+    @brands = Brand.eager_load(:company).all
   end
 
   # GET /brands/1 or /brands/1.json
@@ -60,7 +60,7 @@ class BrandsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_brand
-      @brand = Brand.find(params.expect(:id))
+      @brand = Brand.eager_load(:company).find_by(public_id: params[:id])
     end
 
     # Only allow a list of trusted parameters through.

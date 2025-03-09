@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_09_084204) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_09_092033) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_09_084204) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["public_id"], name: "index_companies_on_public_id", unique: true
+  end
+
+  create_table "company_status_histories", force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.integer "event_type", null: false
+    t.integer "business_status"
+    t.integer "previous_business_status"
+    t.date "occurred_on"
+    t.text "note"
+    t.string "founder_name"
+    t.integer "successor_company_id"
+    t.string "successor_company_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "occurred_on"], name: "index_company_status_histories_on_company_id_and_occurred_on"
+    t.index ["company_id"], name: "index_company_status_histories_on_company_id"
+    t.index ["successor_company_id"], name: "index_company_status_histories_on_successor_company_id"
   end
 
   add_foreign_key "brands", "companies"
