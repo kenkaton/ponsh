@@ -186,6 +186,7 @@ GEM
     nokogiri (1.18.3-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.1)
+    pagy (9.3.3)
     parallel (1.26.3)
     parser (3.3.7.1)
       ast (~> 2.4.1)
@@ -375,6 +376,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  pagy
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)

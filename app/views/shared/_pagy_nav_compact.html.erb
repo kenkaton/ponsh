@@ -1,0 +1,25 @@
+<%
+# TailwindCSSスタイルのコンパクトページネーション - SCSSスタイルを元にしたデザイン
+%>
+
+<div class="pagy flex space-x-1 font-semibold text-sm text-gray-500 mt-6">
+  <% if pagy.prev %>
+    <%= link_to '&laquo;'.html_safe, pagy_url_for(pagy, pagy.prev, **vars), class: "block rounded-lg px-3 py-1 bg-gray-200 hover:bg-gray-300" %>
+  <% else %>
+    <span class="block rounded-lg px-3 py-1 text-gray-300 bg-gray-100 cursor-default">&laquo;</span>
+  <% end %>
+
+  <label class="inline-block whitespace-nowrap bg-gray-200 rounded-lg px-3 py-0.5">
+    ページ <%= number_field_tag :page, pagy.page,
+                    onchange: "window.location='#{pagy_url_for(pagy, "##", **vars)}'.replace('##', this.value)",
+                    min: 1,
+                    max: pagy.last,
+                    class: "bg-gray-100 border-none rounded-md w-12 px-1 py-0.5 mx-1" %> / <%= pagy.last %>
+  </label>
+
+  <% if pagy.next %>
+    <%= link_to '&raquo;'.html_safe, pagy_url_for(pagy, pagy.next, **vars), class: "block rounded-lg px-3 py-1 bg-gray-200 hover:bg-gray-300" %>
+  <% else %>
+    <span class="block rounded-lg px-3 py-1 text-gray-300 bg-gray-100 cursor-default">&raquo;</span>
+  <% end %>
+</div>

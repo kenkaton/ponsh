@@ -3,7 +3,7 @@ class BrandsController < ApplicationController
 
   # GET /brands or /brands.json
   def index
-    @brands = Brand.eager_load(:company).all
+    @pagy, @brands = pagy(Brand.eager_load(:company).all)
   end
 
   # GET /brands/1 or /brands/1.json
