@@ -36,37 +36,7 @@
           <% end %>
           <%= link_to "会社の詳細を見る", brand.company, class: "text-blue-600 hover:underline" if defined?(company_path) %>
 
-          <% if brand.company.address.present? %>
-            <div class="mt-4">
-              <strong>地図:</strong>
-              <% if brand.company.google_map&.latitude.present? && brand.company.google_map&.longitude.present? %>
-                <% map_id = "map_#{brand.id}" %>
-                <div id="<%= map_id %>" class="w-full h-64 mt-2 border rounded shadow-sm"></div>
-                <script>
-                  document.addEventListener('turbo:load', function() {
-                    const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
-                      center: {
-                        lat: <%= brand.company.google_map.latitude %>,
-                        lng: <%= brand.company.google_map.longitude %>
-                      },
-                      zoom: 15
-                    });
-
-                    const marker = new google.maps.Marker({
-                      position: {
-                        lat: <%= brand.company.google_map.latitude %>,
-                        lng: <%= brand.company.google_map.longitude %>
-                      },
-                      map: map,
-                      title: '<%= brand.company.name %>'
-                    });
-                  });
-                </script>
-              <% else %>
-                <p class="text-gray-500">地図情報を読み込めません</p>
-              <% end %>
-            </div>
-          <% end %>
+          <%= render 'shared/google_map', entity: brand.company %>
         </div>
       <% else %>
         <span class="text-gray-500">情報なし</span>

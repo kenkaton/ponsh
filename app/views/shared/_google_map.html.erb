@@ -1,0 +1,34 @@
+<%# Google Mapを表示するパーシャル %>
+<%# 使用例: render 'shared/google_map', entity: brand.company %>
+
+<% if entity.address.present? %>
+  <div class="mt-4">
+    <strong>地図:</strong>
+    <% if entity.google_map&.latitude.present? && entity.google_map&.longitude.present? %>
+      <% map_id = "map_#{entity.id}" %>
+      <div id="<%= map_id %>" class="w-full h-64 mt-2 border rounded shadow-sm"></div>
+      <script>
+        document.addEventListener('turbo:load', function() {
+          const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
+            center: {
+              lat: <%= entity.google_map.latitude %>,
+              lng: <%= entity.google_map.longitude %>
+            },
+            zoom: 15
+          });
+
+          const marker = new google.maps.Marker({
+            position: {
+              lat: <%= entity.google_map.latitude %>,
+              lng: <%= entity.google_map.longitude %>
+            },
+            map: map,
+            title: '<%= entity.name %>'
+          });
+        });
+      </script>
+    <% else %>
+      <p class="text-gray-500">地図情報を読み込めません</p>
+    <% end %>
+  </div>
+<% end %>
