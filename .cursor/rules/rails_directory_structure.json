@@ -1,0 +1,185 @@
+{
+  "name": "Rails 8 ディレクトリ構造",
+  "description": "Ruby on Rails 8 のディレクトリ構造とファイル配置に関するルール",
+  "rules": [
+    {
+      "name": "モデルの配置",
+      "description": "モデルファイルはapp/modelsディレクトリに配置",
+      "pattern": ".*\\.rb$",
+      "check": "^class\\s+([A-Z][a-zA-Z0-9]*?)\\s+<\\s+ApplicationRecord",
+      "not_in": "app/models/",
+      "message": "ActiveRecordモデルはapp/models/ディレクトリに配置してください"
+    },
+    {
+      "name": "コントローラーの配置",
+      "description": "コントローラーファイルはapp/controllersディレクトリに配置",
+      "pattern": ".*\\.rb$",
+      "check": "^class\\s+([A-Z][a-zA-Z0-9]*?)Controller\\s+<\\s+ApplicationController",
+      "not_in": "app/controllers/",
+      "message": "コントローラーはapp/controllers/ディレクトリに配置してください"
+    },
+    {
+      "name": "ビューの配置",
+      "description": "ビューファイルはapp/viewsディレクトリの適切なサブディレクトリに配置",
+      "pattern": ".*\\.(erb|haml|slim|html\\..*)$",
+      "not_in": "app/views/",
+      "message": "ビューファイルはapp/views/ディレクトリの適切なサブディレクトリに配置してください"
+    },
+    {
+      "name": "ヘルパーの配置",
+      "description": "ヘルパーファイルはapp/helpersディレクトリに配置",
+      "pattern": ".*_helper\\.rb$",
+      "not_in": "app/helpers/",
+      "message": "ヘルパーファイルはapp/helpers/ディレクトリに配置してください"
+    },
+    {
+      "name": "マイグレーションの配置",
+      "description": "マイグレーションファイルはdb/migrateディレクトリに配置",
+      "pattern": ".*_migration\\.rb$",
+      "not_in": "db/migrate/",
+      "message": "マイグレーションファイルはdb/migrate/ディレクトリに配置してください"
+    },
+    {
+      "name": "テストの配置",
+      "description": "テストファイルはtestディレクトリの適切なサブディレクトリに配置",
+      "pattern": ".*_test\\.rb$",
+      "not_in": "test/",
+      "message": "テストファイルはtestディレクトリの適切なサブディレクトリに配置してください"
+    },
+    {
+      "name": "設定ファイルの配置",
+      "description": "設定ファイルはconfigディレクトリに配置",
+      "pattern": ".*\\.yml$",
+      "not_in": "config/",
+      "message": "設定ファイルはconfigディレクトリに配置してください"
+    },
+    {
+      "name": "JavaScriptの配置",
+      "description": "JavaScriptファイルはapp/javascriptディレクトリに配置",
+      "pattern": ".*\\.(js|jsx|ts|tsx)$",
+      "not_in": "app/javascript/",
+      "message": "JavaScriptファイルはapp/javascriptディレクトリに配置してください"
+    },
+    {
+      "name": "CSSの配置",
+      "description": "CSSファイルはapp/assets/stylesheetsディレクトリに配置",
+      "pattern": ".*\\.css$",
+      "not_in": "app/assets/stylesheets/",
+      "message": "CSSファイルはapp/assets/stylesheetsディレクトリに配置してください"
+    },
+    {
+      "name": "画像の配置",
+      "description": "画像ファイルはapp/assets/imagesディレクトリに配置",
+      "pattern": ".*\\.(png|jpg|jpeg|gif|svg)$",
+      "not_in": "app/assets/images/",
+      "message": "画像ファイルはapp/assets/imagesディレクトリに配置してください"
+    },
+    {
+      "name": "サービスオブジェクトの配置",
+      "description": "サービスオブジェクトはapp/servicesディレクトリに配置",
+      "pattern": ".*_service\\.rb$",
+      "not_in": "app/services/",
+      "message": "サービスオブジェクトはapp/servicesディレクトリに配置してください"
+    },
+    {
+      "name": "クエリオブジェクトの配置",
+      "description": "クエリオブジェクトはapp/queriesディレクトリに配置",
+      "pattern": ".*_query\\.rb$",
+      "not_in": "app/queries/",
+      "message": "クエリオブジェクトはapp/queriesディレクトリに配置してください"
+    },
+    {
+      "name": "フォームオブジェクトの配置",
+      "description": "フォームオブジェクトはapp/formsディレクトリに配置",
+      "pattern": ".*_form\\.rb$",
+      "not_in": "app/forms/",
+      "message": "フォームオブジェクトはapp/formsディレクトリに配置してください"
+    },
+    {
+      "name": "バリデーターの配置",
+      "description": "カスタムバリデーターはapp/validatorsディレクトリに配置",
+      "pattern": ".*_validator\\.rb$",
+      "not_in": "app/validators/",
+      "message": "カスタムバリデーターはapp/validatorsディレクトリに配置してください"
+    },
+    {
+      "name": "ジョブの配置",
+      "description": "Active Jobクラスはapp/jobsディレクトリに配置",
+      "pattern": ".*_job\\.rb$",
+      "not_in": "app/jobs/",
+      "message": "Active Jobクラスはapp/jobsディレクトリに配置してください"
+    },
+    {
+      "name": "コンポーネントの配置",
+      "description": "ViewComponentはapp/componentsディレクトリに配置",
+      "pattern": ".*_component\\.rb$",
+      "not_in": "app/components/",
+      "message": "ViewComponentはapp/componentsディレクトリに配置してください"
+    },
+    {
+      "name": "コンポーネントテンプレートの配置",
+      "description": "ViewComponentのテンプレートはapp/components配下に配置",
+      "pattern": ".*_component\\.(html|erb|haml|slim)$",
+      "not_in": "app/components/",
+      "message": "ViewComponentのテンプレートはapp/componentsディレクトリに配置してください"
+    },
+    {
+      "name": "メーラーの配置",
+      "description": "メーラーファイルはapp/mailersディレクトリに配置",
+      "pattern": ".*_mailer\\.rb$",
+      "not_in": "app/mailers/",
+      "message": "メーラーファイルはapp/mailersディレクトリに配置してください"
+    },
+    {
+      "name": "チャンネルの配置",
+      "description": "Action Cableチャンネルはapp/channelsディレクトリに配置",
+      "pattern": ".*_channel\\.rb$",
+      "not_in": "app/channels/",
+      "message": "Action Cableチャンネルはapp/channelsディレクトリに配置してください"
+    },
+    {
+      "name": "コンサーンの配置",
+      "description": "コンサーンはapp/models/concernsまたはapp/controllers/concernsディレクトリに配置",
+      "pattern": ".*_concern\\.rb$",
+      "not_in": "app/(models|controllers)/concerns/",
+      "message": "コンサーンは適切なconcernsディレクトリに配置してください"
+    },
+    {
+      "name": "APIコントローラーの配置",
+      "description": "APIコントローラーはapp/controllers/api/ディレクトリに配置",
+      "pattern": ".*\\.rb$",
+      "check": "^class\\s+Api::([A-Z][a-zA-Z0-9]*?)Controller\\s+<",
+      "not_in": "app/controllers/api/",
+      "message": "APIコントローラーはapp/controllers/api/ディレクトリに配置してください"
+    },
+    {
+      "name": "Turboフレームの配置",
+      "description": "Turboフレームのパーシャルはapp/views/shared/または適切なビューディレクトリに配置",
+      "pattern": ".*_frame\\.(html|erb|haml|slim)$",
+      "not_in": "app/views/",
+      "message": "Turboフレームのパーシャルはapp/views/ディレクトリに配置してください"
+    },
+    {
+      "name": "Stimulusコントローラーの配置",
+      "description": "StimulusコントローラーはJavaScriptディレクトリのcontrollersサブディレクトリに配置",
+      "pattern": ".*_controller\\.(js|ts)$",
+      "not_in": "app/javascript/controllers/",
+      "message": "StimulusコントローラーはJavaScriptディレクトリのcontrollersサブディレクトリに配置してください"
+    },
+    {
+      "name": "ローカライゼーションファイルの配置",
+      "description": "ローカライゼーションファイルはconfig/localesディレクトリに配置",
+      "pattern": ".*\\.(yml|rb)$",
+      "check": "^([a-z]{2}|[a-z]{2}-[A-Z]{2}):",
+      "not_in": "config/locales/",
+      "message": "ローカライゼーションファイルはconfig/localesディレクトリに配置してください"
+    },
+    {
+      "name": "Propshaftアセットの配置",
+      "description": "Propshaftアセットはapp/assetsディレクトリに配置",
+      "pattern": ".*\\.(js|css|png|jpg|jpeg|gif|svg)$",
+      "not_in": "app/assets/",
+      "message": "Propshaftアセットはapp/assetsディレクトリに配置してください"
+    }
+  ]
+}

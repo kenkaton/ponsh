@@ -1,0 +1,167 @@
+{
+  "name": "Ruby on Rails 8 ベストプラクティス",
+  "description": "Ruby on Rails 8 のベストプラクティスに沿ったルール",
+  "rules": [
+    {
+      "name": "コントローラー命名規則",
+      "description": "コントローラー名は複数形で、末尾は'Controller'",
+      "pattern": "app/controllers/(.+)\\.rb$",
+      "check": "^class\\s+([A-Z][a-zA-Z0-9]*?)Controller\\s+<\\s+ApplicationController",
+      "message": "コントローラークラス名は複数形で、末尾は'Controller'であるべきです"
+    },
+    {
+      "name": "モデル命名規則",
+      "description": "モデル名は単数形",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "^class\\s+([A-Z][a-zA-Z0-9]*?)\\s+<\\s+ApplicationRecord",
+      "message": "モデルクラス名は単数形であるべきです"
+    },
+    {
+      "name": "テストファイル命名規則",
+      "description": "テストファイル名は'_test.rb'で終わる",
+      "pattern": "test/(.+)\\.rb$",
+      "check": "_test\\.rb$",
+      "message": "テストファイル名は'_test.rb'で終わるべきです"
+    },
+    {
+      "name": "インデントスタイル",
+      "description": "インデントには2スペースを使用",
+      "pattern": ".*\\.rb$",
+      "check": "^(  )*[^ ]",
+      "message": "Rubyファイルでは2スペースのインデントを使用してください"
+    },
+    {
+      "name": "文字列リテラル",
+      "description": "文字列リテラルにはシングルクォートを優先",
+      "pattern": ".*\\.rb$",
+      "check": "\"[^\"]*\"",
+      "message": "変数展開や特殊文字が不要な場合は、ダブルクォートではなくシングルクォートを使用してください"
+    },
+    {
+      "name": "トレイリングホワイトスペース",
+      "description": "行末の不要な空白を削除",
+      "pattern": ".*\\.(rb|erb|haml|slim)$",
+      "check": "\\s+$",
+      "message": "行末の不要な空白を削除してください"
+    },
+    {
+      "name": "ルートのネスト制限",
+      "description": "routes.rbでのネストは2レベルまで",
+      "pattern": "config/routes\\.rb$",
+      "check": "resources\\s+:[a-z_]+\\s+do[^{]*resources\\s+:[a-z_]+\\s+do[^{]*resources",
+      "message": "ルートのネストは2レベルまでにしてください"
+    },
+    {
+      "name": "Hotwireの活用",
+      "description": "従来のJavaScriptよりもHotwireを活用",
+      "pattern": "app/javascript/(.+)\\.(js|ts)$",
+      "check": "import\\s+.*\\s+from\\s+['\"]@hotwired/(turbo|stimulus)['\"]",
+      "message": "従来のJavaScriptよりもHotwire（Turbo、Stimulus）を活用することを検討してください"
+    },
+    {
+      "name": "Fat Modelの防止",
+      "description": "モデルが大きくなりすぎないようにする",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "^([\\s\\S]){500,}$",
+      "message": "モデルが大きくなりすぎています。関心事を分離し、Concernやサービスオブジェクトを検討してください"
+    },
+    {
+      "name": "before_actionの使用",
+      "description": "コントローラーでのコード重複を減らすためにbefore_actionを使用",
+      "pattern": "app/controllers/(.+)_controller\\.rb$",
+      "check": "before_action\\s+:set_[a-z_]+,\\s+only:",
+      "message": "コントローラーアクション間で共通のコードにはbefore_actionを使用してください"
+    },
+    {
+      "name": "トランザクションの使用",
+      "description": "複数のデータベース操作の一貫性を保つためにトランザクションを使用",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "ActiveRecord::Base\\.transaction|[A-Z][a-zA-Z0-9]*?\\.transaction",
+      "message": "複数の関連するデータベース操作にはトランザクションを使用してください"
+    },
+    {
+      "name": "国際化（i18n）の使用",
+      "description": "ハードコードされた文字列の代わりにi18nを使用",
+      "pattern": "app/views/(.+)\\.(erb|haml|slim|html\\.*)$",
+      "check": "t\\('[^']*'\\)|I18n\\.t\\('[^']*'\\)|I18n\\.translate\\('[^']*'\\)",
+      "message": "ハードコードされた文字列の代わりにi18nを使用してください"
+    },
+    {
+      "name": "scope使用でのラムダ",
+      "description": "モデルscopeではラムダを使用する",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "scope\\s+:[a-z_]+,\\s+->\\s*{",
+      "message": "モデルのscopeではラムダを使用してください"
+    },
+    {
+      "name": "セキュアパラメータの使用",
+      "description": "Strong Parametersの使用を確認",
+      "pattern": "app/controllers/(.+)_controller\\.rb$",
+      "check": "params\\.require\\(:[a-z_]+\\)\\.permit\\(",
+      "message": "マスアサインメント脆弱性を避けるためにStrong Parametersを使用してください"
+    },
+    {
+      "name": "Propshaftアセットパイプラインの使用",
+      "description": "Rails 8ではPropshaftを優先する",
+      "pattern": "(config/application\\.rb|config/environments/.+\\.rb)$",
+      "check": "require\\s+['\"]propshaft['\"]|config\\.assets\\.css_compressor|config\\.assets\\.js_compressor",
+      "message": "Rails 8ではSprocketsの代わりにPropshaftを使用することを推奨します"
+    },
+    {
+      "name": "SolidCacheの使用",
+      "description": "Rails 8ではSolidCacheの使用を推奨",
+      "pattern": "config/environments/production\\.rb$",
+      "check": "config\\.cache_store\\s+=\\s+:solid_cache",
+      "message": "Rails 8ではキャッシュストアとしてSolidCacheの使用を検討してください"
+    },
+    {
+      "name": "ViewComponentの使用",
+      "description": "再利用可能なUIコンポーネントにはViewComponentを使用",
+      "pattern": "app/components/(.+)_component\\.rb$",
+      "check": "^class\\s+([A-Z][a-zA-Z0-9]*?)Component\\s+<\\s+ViewComponent::Base",
+      "message": "再利用可能なUIコンポーネントにはViewComponentを使用してください"
+    },
+    {
+      "name": "属性のタイプ定義",
+      "description": "属性にはタイプ定義を使用",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "attribute\\s+:[a-z_]+,\\s+[A-Z][a-zA-Z0-9:]*?(Type)?",
+      "message": "モデル属性には明示的なタイプ定義を使用してください"
+    },
+    {
+      "name": "並列テストの使用",
+      "description": "テスト実行時間を短縮するための並列テスト",
+      "pattern": "test/test_helper\\.rb$",
+      "check": "parallelize\\(workers:",
+      "message": "テスト実行時間を短縮するために並列テストの使用を検討してください"
+    },
+    {
+      "name": "Turboリンクの使用",
+      "description": "ページ遷移を高速化するためのTurboリンク",
+      "pattern": "app/views/layouts/(.+)\\.(erb|haml|slim|html\\..*)$",
+      "check": "<meta name=\"turbo-visit-control\"",
+      "message": "ページ遷移を高速化するためにTurboリンクの使用を検討してください"
+    },
+    {
+      "name": "SolidQueueの使用",
+      "description": "非同期ジョブ処理にはSolidQueueを使用",
+      "pattern": "config/application\\.rb$",
+      "check": "require\\s+['\"]solid_queue['\"]|config\\.active_job\\.queue_adapter\\s+=\\s+:solid_queue",
+      "message": "非同期ジョブ処理にはSolidQueueの使用を検討してください"
+    },
+    {
+      "name": "Zeitwerk自動読み込みの活用",
+      "description": "クラス読み込みにはZeitwerkを活用する",
+      "pattern": "config/application\\.rb$",
+      "check": "config\\.autoloader\\s+=\\s+:zeitwerk",
+      "message": "クラス読み込みにはZeitwerkを活用してください"
+    },
+    {
+      "name": "Active Storage検証の使用",
+      "description": "ファイルアップロードには検証を使用",
+      "pattern": "app/models/(.+)\\.rb$",
+      "check": "has_one_attached|has_many_attached",
+      "message": "Active Storageのアタッチメントには検証の追加を検討してください"
+    }
+  ]
+}
