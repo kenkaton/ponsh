@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  public_id: company_one
+  name: MyString
+  kana: MyString
+  name_en: MyString
+  prefecture_code: 1
+  city: MyString
+  address: MyString
+  tel: MyString
+  fax: MyString
+  website: MyString
+  detail: MyText
+
+two:
+  public_id: company_two
+  name: MyString
+  kana: MyString
+  name_en: MyString
+  prefecture_code: 1
+  city: MyString
+  address: MyString
+  tel: MyString
+  fax: MyString
+  website: MyString
+  detail: MyText

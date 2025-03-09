@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  public_id: brand_one
+  name: MyString
+  kana: MyString
+  name_en: MyString
+  detail: MyText
+  company: one
+
+two:
+  public_id: brand_two
+  name: MyString
+  kana: MyString
+  name_en: MyString
+  detail: MyText
+  company: two
