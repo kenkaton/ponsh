@@ -1,49 +1,49 @@
 <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
   <div id="<%= dom_id brand %>" class="w-full sm:w-auto my-5 space-y-5">
     <div>
-      <strong class="block font-medium mb-1">Name:</strong>
+      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.name') %>:</strong>
       <%= brand.name %>
     </div>
     <div>
-      <strong class="block font-medium mb-1">Kana:</strong>
+      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.kana') %>:</strong>
       <%= brand.kana %>
     </div>
     <div>
-      <strong class="block font-medium mb-1">Name en:</strong>
+      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.name_en') %>:</strong>
       <%= brand.name_en %>
     </div>
     <div>
-      <strong class="block font-medium mb-1">Detail:</strong>
+      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.detail') %>:</strong>
       <%= brand.detail %>
     </div>
     <div>
-      <strong class="block font-medium mb-1">Company:</strong>
+      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.company') %>:</strong>
       <% if brand.company.present? %>
         <div class="ml-4 space-y-2">
-          <div><strong>名前:</strong> <%= brand.company.name %></div>
+          <div><strong><%= t('activerecord.attributes.company.name') %>:</strong> <%= brand.company.name %></div>
           <% if brand.company.address.present? %>
-            <div><strong>住所:</strong> <%= brand.company.address %></div>
+            <div><strong><%= t('activerecord.attributes.company.address') %>:</strong> <%= brand.company.address %></div>
           <% end %>
           <% if brand.company.tel.present? %>
-            <div><strong>電話番号:</strong> <%= brand.company.tel %></div>
+            <div><strong><%= t('activerecord.attributes.company.tel') %>:</strong> <%= brand.company.tel %></div>
           <% end %>
           <% if brand.company.website.present? %>
-            <div><strong>ウェブサイト:</strong> <%= link_to brand.company.website, brand.company.website, target: "_blank" %></div>
+            <div><strong><%= t('activerecord.attributes.company.website') %>:</strong> <%= link_to brand.company.website, brand.company.website, target: "_blank" %></div>
           <% end %>
-          <%= link_to "会社の詳細を見る", brand.company, class: "text-blue-600 hover:underline" if defined?(company_path) %>
+          <%= link_to t('brands.company_details'), brand.company, class: "text-blue-600 hover:underline" if defined?(company_path) %>
 
           <%= render 'shared/google_map', entity: brand.company %>
         </div>
       <% else %>
-        <span class="text-gray-500">情報なし</span>
+        <span class="text-gray-500"><%= t('common.not_found') %></span>
       <% end %>
     </div>
   </div>
   <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-    <%= link_to "Show", brand, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-    <%= link_to "Edit", edit_brand_path(brand), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+    <%= link_to t('common.show'), brand, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+    <%= link_to t('common.edit'), edit_brand_path(brand), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
     <div class="sm:inline-block">
-      <%= button_to "Destroy", brand, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+      <%= button_to t('common.destroy'), brand, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: t('common.confirmation') } %>
     </div>
   </div>
 </div>

@@ -1,7 +1,9 @@
 <%= form_with(model: company, class: "contents") do |form| %>
   <% if company.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(company.errors.count, "error") %> prohibited this company from being saved:</h2>
+      <h2>
+        <%= t('errors.template.header', count: company.errors.count, model: Company.model_name.human) %>
+      </h2>
 
       <ul class="list-disc ml-6">
         <% company.errors.each do |error| %>
@@ -34,7 +36,7 @@
   <div class="my-5">
     <%= form.label :prefecture_code %>
     <%= form.collection_select :prefecture_code, JpPrefecture::Prefecture.all, :code, :name,
-        { include_blank: "選択してください" },
+        { include_blank: t('common.select_placeholder') },
         class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full",
                 {"border-gray-400 focus:outline-blue-600": company.errors[:prefecture_code].none?,
                  "border-red-400 focus:outline-red-600": company.errors[:prefecture_code].any?}] %>
@@ -71,6 +73,6 @@
   </div>
 
   <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit t('companies.form.submit'), class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

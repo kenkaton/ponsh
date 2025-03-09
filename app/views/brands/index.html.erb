@@ -1,4 +1,4 @@
-<% content_for :title, "Brands" %>
+<% content_for :title, t('brands.index.title') %>
 
 <div class="w-full">
   <% if notice.present? %>
@@ -6,15 +6,15 @@
   <% end %>
 
   <div class="flex justify-between items-center mb-6">
-    <h1 class="font-bold text-4xl">Brands</h1>
-    <%= link_to "New brand", new_brand_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+    <h1 class="font-bold text-4xl"><%= t('brands.index.title') %></h1>
+    <%= link_to t('brands.index.new'), new_brand_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
   </div>
 
   <div id="brands" class="space-y-4">
     <% if @brands.any? %>
       <%= render partial: "brand_list_item", collection: @brands, as: :brand %>
     <% else %>
-      <p class="text-center my-10">No brands found.</p>
+      <p class="text-center my-10"><%= t('brands.index.no_brands') %></p>
     <% end %>
   </div>
 

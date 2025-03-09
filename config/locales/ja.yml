@@ -1,0 +1,89 @@
+ja:
+  hello: "こんにちは、世界"
+
+  # 共通テキスト
+  common:
+    edit: "編集"
+    show: "詳細"
+    destroy: "削除"
+    back: "戻る"
+    confirmation: "本当によろしいですか？"
+    submit: "保存"
+    select_placeholder: "選択してください"
+    not_found: "見つかりませんでした"
+    notice:
+      created: "%{model}が正常に作成されました"
+      updated: "%{model}が正常に更新されました"
+      destroyed: "%{model}が正常に削除されました"
+
+  # ブランド関連
+  brands:
+    index:
+      title: "銘柄一覧"
+      new: "新規銘柄"
+      no_brands: "銘柄が見つかりませんでした"
+    new:
+      title: "新規銘柄"
+    edit:
+      title: "銘柄の編集"
+    show:
+      title: "銘柄の詳細"
+    form:
+      submit: "保存"
+    company_details: "酒蔵の詳細を見る"
+
+  # 会社関連
+  companies:
+    index:
+      title: "酒蔵一覧"
+      new: "新規酒蔵"
+      no_companies: "酒蔵が見つかりませんでした"
+    new:
+      title: "新規酒蔵"
+    edit:
+      title: "酒蔵の編集"
+    show:
+      title: "酒蔵の詳細"
+    form:
+      submit: "保存"
+
+  # モデル名と属性
+  activerecord:
+    models:
+      brand: "銘柄"
+      company: "酒蔵"
+    attributes:
+      brand:
+        name: "名前"
+        kana: "フリガナ"
+        name_en: "英語名"
+        detail: "詳細"
+        image: "画像"
+        company: "酒蔵"
+      company:
+        public_id: "公開ID"
+        name: "名前"
+        kana: "フリガナ"
+        name_en: "英語名"
+        prefecture_code: "都道府県"
+        city: "市区町村"
+        address: "住所"
+        tel: "電話番号"
+        fax: "FAX"
+        website: "ウェブサイト"
+        detail: "詳細"
+
+  # エラーメッセージ
+  errors:
+    format: "%{attribute}%{message}"
+    template:
+      header: "%{model}に%{count}個のエラーが発生しました"
+      body: "次の項目を確認してください："
+    messages:
+      blank: "を入力してください"
+      taken: "はすでに存在します"
+      invalid: "は不正な値です"
+      too_short: "は%{count}文字以上で入力してください"
+      too_long: "は%{count}文字以内で入力してください"
+      not_a_number: "は数値で入力してください"
+      not_an_integer: "は整数で入力してください"
