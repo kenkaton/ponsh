@@ -31,6 +31,16 @@ ja:
     form:
       submit: "保存"
     company_details: "酒蔵の詳細を見る"
+    brand:  # _brand.html.erb 用
+      name: "名前"
+      kana: "フリガナ"
+      name_en: "英語名"
+      detail: "詳細"
+      company: "酒蔵"
+      company_name: "名前"
+      company_address: "住所"
+      company_tel: "電話番号"
+      company_website: "ウェブサイト"
 
   # 会社関連
   companies:
@@ -46,6 +56,17 @@ ja:
       title: "酒蔵の詳細"
     form:
       submit: "保存"
+    company:  # _company.html.erb 用
+      name: "名前"
+      kana: "フリガナ"
+      name_en: "英語名"
+      prefecture_code: "都道府県"
+      city: "市区町村"
+      address: "住所"
+      tel: "電話番号"
+      fax: "FAX"
+      website: "ウェブサイト"
+      detail: "詳細"
 
   # モデル名と属性
   activerecord:

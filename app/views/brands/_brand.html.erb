@@ -1,34 +1,34 @@
 <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
   <div id="<%= dom_id brand %>" class="w-full sm:w-auto my-5 space-y-5">
     <div>
-      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.name') %>:</strong>
+      <strong class="block font-medium mb-1"><%= t('.name') %>:</strong>
       <%= brand.name %>
     </div>
     <div>
-      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.kana') %>:</strong>
+      <strong class="block font-medium mb-1"><%= t('.kana') %>:</strong>
       <%= brand.kana %>
     </div>
     <div>
-      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.name_en') %>:</strong>
+      <strong class="block font-medium mb-1"><%= t('.name_en') %>:</strong>
       <%= brand.name_en %>
     </div>
     <div>
-      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.detail') %>:</strong>
+      <strong class="block font-medium mb-1"><%= t('.detail') %>:</strong>
       <%= brand.detail %>
     </div>
     <div>
-      <strong class="block font-medium mb-1"><%= t('activerecord.attributes.brand.company') %>:</strong>
+      <strong class="block font-medium mb-1"><%= t('.company') %>:</strong>
       <% if brand.company.present? %>
         <div class="ml-4 space-y-2">
-          <div><strong><%= t('activerecord.attributes.company.name') %>:</strong> <%= brand.company.name %></div>
+          <div><strong><%= t('.company_name') %>:</strong> <%= brand.company.name %></div>
           <% if brand.company.address.present? %>
-            <div><strong><%= t('activerecord.attributes.company.address') %>:</strong> <%= brand.company.address %></div>
+            <div><strong><%= t('.company_address') %>:</strong> <%= brand.company.address %></div>
           <% end %>
           <% if brand.company.tel.present? %>
-            <div><strong><%= t('activerecord.attributes.company.tel') %>:</strong> <%= brand.company.tel %></div>
+            <div><strong><%= t('.company_tel') %>:</strong> <%= brand.company.tel %></div>
           <% end %>
           <% if brand.company.website.present? %>
-            <div><strong><%= t('activerecord.attributes.company.website') %>:</strong> <%= link_to brand.company.website, brand.company.website, target: "_blank" %></div>
+            <div><strong><%= t('.company_website') %>:</strong> <%= link_to brand.company.website, brand.company.website, target: "_blank" %></div>
           <% end %>
           <%= link_to t('brands.company_details'), brand.company, class: "text-blue-600 hover:underline" if defined?(company_path) %>
 
