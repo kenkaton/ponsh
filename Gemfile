@@ -20,6 +20,8 @@ gem "tailwindcss-rails"
 gem "jbuilder"
 # Japanese prefecture utilities
 gem "jp_prefecture"
+# Static pages
+gem "high_voltage", "~> 4.0.0"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
