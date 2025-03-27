@@ -15,6 +15,8 @@ ja:
       created: "%{model}が正常に作成されました"
       updated: "%{model}が正常に更新されました"
       destroyed: "%{model}が正常に削除されました"
+    search: '検索'
+    actions: '操作'
 
   # ブランド関連
   brands:
@@ -22,6 +24,8 @@ ja:
       title: "銘柄一覧"
       new: "新規銘柄"
       no_brands: "銘柄が見つかりませんでした"
+      search_placeholder: '銘柄名や会社名を入力してください'
+      card_view: 'カード表示'
     new:
       title: "新規銘柄"
     edit:
@@ -108,3 +112,14 @@ ja:
       too_long: "は%{count}文字以内で入力してください"
       not_a_number: "は数値で入力してください"
       not_an_integer: "は整数で入力してください"
+
+  searches:
+    index:
+      title: 'お酒の検索'
+      placeholder: '銘柄名や会社名を入力してください'
+      results_title: '%{query}の検索結果'
+      no_results: '検索結果はありません'
+    search:
+      title: 'お酒の検索'
+      results_title: '%{query}の検索結果'
+      no_results: '検索結果はありません'

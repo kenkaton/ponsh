@@ -10,6 +10,9 @@ Pagy::DEFAULT[:items] = 25
 require "pagy/extras/headers"
 Pagy::DEFAULT[:headers] = { page: "Current-Page", items: "Page-Items", count: "Total-Count", pages: "Total-Pages" }
 
+# Tailwindエクストラ
+require "pagy/extras/tailwind"
+
 # Pagy::Backend をコントローラーで使用可能にする
 require "pagy/backend"
 Rails.application.config.to_prepare do
