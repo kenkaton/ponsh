@@ -5,15 +5,6 @@ class BrandsController < ApplicationController
   def index
     @query = params[:query]
     @pagy, @brands = pagy(Brand.eager_load(:company).search(@query))
-
-    respond_to do |format|
-      format.html do
-        if params[:search_view] == "card"
-          render :search
-        end
-      end
-      format.json { render :index }
-    end
   end
 
   # GET /brands/1 or /brands/1.json

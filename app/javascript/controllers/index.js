@@ -12,7 +12,9 @@ eagerLoadControllersFrom("controllers", application)
 // コントローラーを直接インポート
 import HelloController from "controllers/hello_controller"
 import ToggleController from "controllers/toggle_controller"
+import SearchController from "controllers/search_controller"
 
 // コントローラーを登録
 application.register("hello", HelloController)
 application.register("toggle", ToggleController)
+application.register("search", SearchController)

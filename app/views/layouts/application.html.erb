@@ -27,8 +27,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-controller="search">
     <%= render 'shared/header' %>
+    <div id="search-container" class="fixed z-10 w-full bg-white shadow-md top-16 hidden" data-search-target="container">
+      <div class="container mx-auto px-5 py-4">
+        <%= render partial: 'shared/search_form', locals: { visible: '', query: params[:query] } %>
+      </div>
+    </div>
 
     <main class="container mx-auto mt-28 px-5 flex">
       <%= yield %>

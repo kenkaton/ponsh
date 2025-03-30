@@ -10,8 +10,11 @@ Pagy::DEFAULT[:items] = 25
 require "pagy/extras/headers"
 Pagy::DEFAULT[:headers] = { page: "Current-Page", items: "Page-Items", count: "Total-Count", pages: "Total-Pages" }
 
-# Tailwindエクストラ
-require "pagy/extras/tailwind"
+# 日本語のラベル設定
+Pagy::DEFAULT[:nav_aria_label] = "pagination"
+Pagy::DEFAULT[:nav_prev_label] = "前へ"
+Pagy::DEFAULT[:nav_next_label] = "次へ"
+Pagy::DEFAULT[:nav_gap] = "..."
 
 # Pagy::Backend をコントローラーで使用可能にする
 require "pagy/backend"
