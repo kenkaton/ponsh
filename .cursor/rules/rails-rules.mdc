@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# rule content
+
+- [README.md](mdc:.cursor/rules/README.md) - 全体像
+- [rails_rules.json](mdc:.cursor/rules/rails_rules.json) - コーディング規約やベストプラクティスのルール
+- [rails_directory_structure.json](mdc:.cursor/rules/rails_directory_structure.json) - ディレクトリ構造とファイル配置のルール
