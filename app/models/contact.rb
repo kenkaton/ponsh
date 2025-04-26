@@ -20,6 +20,6 @@ class Contact < ApplicationRecord
   private
 
   def at_least_one_contact_present
-    errors.add(:base, "\u5C11\u306A\u304F\u3068\u30821\u3064\u306E\u9023\u7D61\u5148\u60C5\u5831\u304C\u5FC5\u8981\u3067\u3059") unless any_contact_present?
+    errors.add(:base, "少なくとも1つの連絡先情報が必要です") unless any_contact_present?
   end
 end
