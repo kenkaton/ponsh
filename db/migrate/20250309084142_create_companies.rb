@@ -5,12 +5,6 @@ class CreateCompanies < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.string :kana
       t.string :name_en
-      t.integer :prefecture_code, null: false
-      t.string :city
-      t.string :address
-      t.string :tel
-      t.string :fax
-      t.string :website
       t.text :detail
 
       t.timestamps

@@ -1,45 +1,19 @@
 class Company < ApplicationRecord
   include PublicIdCreatable
-  include JpPrefecture
-  jp_prefecture :prefecture_code
 
   has_many :brands, dependent: :destroy
   has_many :company_status_histories, dependent: :destroy
   has_many :successor_company_status_histories, class_name: "CompanyStatusHistory", foreign_key: "successor_company_id", dependent: :nullify
 
-  has_one :google_map, as: :gmappable, dependent: :destroy
+  # Addressとのポリモーフィック関連 (一つの会社は一つの住所を持つ)
+  has_one :address, as: :addressable, dependent: :destroy
+  accepts_nested_attributes_for :address, allow_destroy: true # オプション: フォームなどで一括更新する場合
 
-  after_save :update_google_map, if: :saved_change_to_address?
+  # Contactsとのポリモーフィック関連 (一つの会社は一つの連絡先を持つ)
+  has_one :contact, as: :contactable, dependent: :destroy
+  accepts_nested_attributes_for :contact, allow_destroy: true
 
-  # 都道府県名を取得するメソッド
-  def prefecture_name
-    prefecture.try(:name)
-  end
-
-  # 都道府県名（ひらがな）を取得するメソッド
-  def prefecture_name_h
-    prefecture.try(:name_h)
-  end
-
-  # 都道府県名（カタカナ）を取得するメソッド
-  def prefecture_name_k
-    prefecture.try(:name_k)
-  end
-
-  # 都道府県名（ローマ字）を取得するメソッド
-  def prefecture_name_r
-    prefecture.try(:name_r)
-  end
-
-  private
-
-  def update_google_map
-    return unless address.present?
-
-    if google_map.present?
-      google_map.update(address: address)
-    else
-      create_google_map(address: address)
-    end
-  end
+  # 連絡先情報のデリゲート
+  delegate :tel, :fax, :website, :email, :instagram, :twitter, :facebook, :line,
+           to: :contact, allow_nil: true, prefix: false
 end

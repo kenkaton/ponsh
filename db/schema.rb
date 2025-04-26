@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_09_101629) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_13_111914) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "addressable_type", null: false
+    t.bigint "addressable_id", null: false
+    t.string "zip_code"
+    t.integer "prefecture_code"
+    t.string "city"
+    t.string "street_address"
+    t.string "building_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
 
   create_table "brands", force: :cascade do |t|
     t.string "public_id", null: false
@@ -32,12 +45,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_09_101629) do
     t.string "name", null: false
     t.string "kana"
     t.string "name_en"
-    t.integer "prefecture_code", null: false
-    t.string "city"
-    t.string "address"
-    t.string "tel"
-    t.string "fax"
-    t.string "website"
     t.text "detail"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -59,6 +66,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_09_101629) do
     t.index ["company_id", "occurred_on"], name: "index_company_status_histories_on_company_id_and_occurred_on"
     t.index ["company_id"], name: "index_company_status_histories_on_company_id"
     t.index ["successor_company_id"], name: "index_company_status_histories_on_successor_company_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "contactable_type", null: false, comment: "関連タイプ (Company, Store, StoreOperatorなど)"
+    t.bigint "contactable_id", null: false, comment: "関連ID"
+    t.string "tel", comment: "電話番号"
+    t.string "fax", comment: "FAX番号"
+    t.string "website", comment: "ウェブサイトURL"
+    t.string "email", comment: "メールアドレス"
+    t.string "instagram", comment: "Instagramアカウント"
+    t.string "twitter", comment: "Twitterアカウント"
+    t.string "facebook", comment: "Facebookページ"
+    t.string "line", comment: "LINE公式アカウント"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contactable_type", "contactable_id"], name: "index_contacts_on_contactable_type_and_contactable_id"
   end
 
   create_table "google_maps", force: :cascade do |t|
