@@ -24,13 +24,7 @@
           <% if brand.company.address.present? %>
             <div>
               <strong>住所:</strong>
-              <%= [
-                brand.company.address.zip_code,
-                brand.company.address.prefecture_code && defined?(JpPrefecture) ? JpPrefecture::Prefecture.find(code: brand.company.address.prefecture_code)&.name : nil,
-                brand.company.address.city,
-                brand.company.address.street_address,
-                brand.company.address.building_name
-              ].compact.join(' ') %>
+              <%= brand.company.address&.full_address %>
             </div>
           <% end %>
           <% if brand.company.tel.present? %>

@@ -12,24 +12,8 @@
     <%= company.name_en %>
   </div>
   <div>
-    <strong class="block font-medium mb-1">都道府県:</strong>
-    <%= company.prefecture_name %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">市区町村:</strong>
-    <%= company.city %>
-  </div>
-  <div>
     <strong class="block font-medium mb-1">住所:</strong>
-    <% if company.address.present? %>
-      <%= [
-        company.address.zip_code,
-        company.address.prefecture_code && defined?(JpPrefecture) ? JpPrefecture::Prefecture.find(code: company.address.prefecture_code)&.name : nil,
-        company.address.city,
-        company.address.street_address,
-        company.address.building_name
-      ].compact.join(' ') %>
-    <% end %>
+    <%= company.address&.full_address %>
   </div>
   <div>
     <strong class="block font-medium mb-1">電話番号:</strong>
