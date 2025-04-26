@@ -1,8 +1,0 @@
-c = Company.create_or_find_by!(name: '雲海酒造', kana: 'うんかいしゅぞう', prefecture_code: 45, city: '宮崎市', address: '昭栄町45-1', tel: '0985-23-7890', fax: '', website: 'http://www.unkai.co.jp')
-Brand.find_or_create_by!(name: '綾錦', kana: 'あやにしき', company: c)
-Brand.find_or_create_by!(name: '我楽', kana: 'がらく', company: c)
-Brand.find_or_create_by!(name: '初御代', kana: 'はつみよ', company: c)
-Brand.find_or_create_by!(name: '菊初御代', kana: 'きくはつみよ', company: c)
-c = Company.create_or_find_by!(name: '千徳酒造', kana: 'せんとくしゅぞう', prefecture_code: 45, city: '延岡市', address: '大瀬町2-1-8', tel: '0982-32-2024', fax: '0982-32-2169', website: 'http://www.sentoku.com')
-Brand.find_or_create_by!(name: '千徳', kana: 'せんとく', company: c)
-Brand.find_or_create_by!(name: '夢の中まで', kana: 'ゆめのなかまで', company: c)
