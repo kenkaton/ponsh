@@ -1,42 +1,50 @@
 <div id="<%= dom_id company %>" class="w-full sm:w-auto my-5 space-y-5">
   <div>
-    <strong class="block font-medium mb-1"><%= t('.name') %>:</strong>
+    <strong class="block font-medium mb-1">名前:</strong>
     <%= company.name %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.kana') %>:</strong>
+    <strong class="block font-medium mb-1">フリガナ:</strong>
     <%= company.kana %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.name_en') %>:</strong>
+    <strong class="block font-medium mb-1">英語名:</strong>
     <%= company.name_en %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.prefecture_code') %>:</strong>
+    <strong class="block font-medium mb-1">都道府県:</strong>
     <%= company.prefecture_name %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.city') %>:</strong>
+    <strong class="block font-medium mb-1">市区町村:</strong>
     <%= company.city %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.address') %>:</strong>
-    <%= company.address %>
+    <strong class="block font-medium mb-1">住所:</strong>
+    <% if company.address.present? %>
+      <%= [
+        company.address.zip_code,
+        company.address.prefecture_code && defined?(JpPrefecture) ? JpPrefecture::Prefecture.find(code: company.address.prefecture_code)&.name : nil,
+        company.address.city,
+        company.address.street_address,
+        company.address.building_name
+      ].compact.join(' ') %>
+    <% end %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.tel') %>:</strong>
+    <strong class="block font-medium mb-1">電話番号:</strong>
     <%= company.tel %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.fax') %>:</strong>
+    <strong class="block font-medium mb-1">FAX:</strong>
     <%= company.fax %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.website') %>:</strong>
+    <strong class="block font-medium mb-1">ウェブサイト:</strong>
     <%= company.website %>
   </div>
   <div>
-    <strong class="block font-medium mb-1"><%= t('.detail') %>:</strong>
+    <strong class="block font-medium mb-1">詳細:</strong>
     <%= company.detail %>
   </div>
 </div>

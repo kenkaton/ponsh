@@ -13,6 +13,10 @@ class Company < ApplicationRecord
   has_one :contact, as: :contactable, dependent: :destroy
   accepts_nested_attributes_for :contact, allow_destroy: true
 
+  # GoogleMapとのポリモーフィック関連
+  has_one :google_map, as: :gmappable, dependent: :destroy
+  accepts_nested_attributes_for :google_map, allow_destroy: true
+
   # 連絡先情報のデリゲート
   delegate :tel, :fax, :website, :email, :instagram, :twitter, :facebook, :line,
            to: :contact, allow_nil: true, prefix: false
