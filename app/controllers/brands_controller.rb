@@ -4,7 +4,10 @@ class BrandsController < ApplicationController
   # GET /brands or /brands.json
   def index
     @query = params[:query]
-    @pagy, @brands = pagy(Brand.eager_load(company: [ :address, :contact, :google_map ]).search(@query))
+
+    # 検索とeager_loadを同時に行い、paginate
+    query_scope = Brand.search(@query)
+    @pagy, @brands = pagy(query_scope.eager_load(company: [ :address, :contact, :google_map ]))
   end
 
   # GET /brands/1 or /brands/1.json

@@ -30,8 +30,8 @@ address_attrs = { prefecture_code: 11, city: 'さいたま市', street_address: 
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '048-862-5734', fax: '048-862-5735', website: 'http://uchiki-s.wixsite.com/uchikisake', contactable_type: 'Company' }
 c.contact || c.create_contact!(contact_attrs)
+CompanyStatusHistory.create!(company: c, event_type: :status_change, business_status: :closed)
 Brand.find_or_create_by!(name: '旭正宗', kana: 'あさひまさむね', company: c)
-Brand.find_or_create_by!(name: '&#8203;鳳翔閣', kana: 'ほうしょうかく', company: c)
 
 
 c = Company.create_or_find_by!(name: '鈴木酒造', kana: 'すずきしゅぞう')

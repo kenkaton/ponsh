@@ -67,7 +67,7 @@ c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '0967-72-1177', fax: '0967-72-0421', website: 'http://tuzyun.com', contactable_type: 'Company' }
 c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '通潤', kana: 'つうじゅん', company: c)
-Brand.find_or_create_by!(name: '&#34796; SEMI', kana: 'せみ', company: c)
+Brand.find_or_create_by!(name: '蝉', kana: 'せみ', company: c)
 Brand.find_or_create_by!(name: '雲雀', kana: 'ひばり', company: c)
 Brand.find_or_create_by!(name: '蛍丸', kana: 'ほたるまる', company: c)
 Brand.find_or_create_by!(name: 'Soigner', kana: 'そわにえ', company: c)

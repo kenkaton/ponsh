@@ -58,7 +58,7 @@ Brand.find_or_create_by!(name: '州', kana: 'しゅう', company: c)
 Brand.find_or_create_by!(name: 'スクウェア・ワン', kana: 'すくうぇあ・わん', company: c)
 Brand.find_or_create_by!(name: 'はなしぼり', kana: 'はなしぼり', company: c)
 Brand.find_or_create_by!(name: '鴻山', kana: 'こうざん', company: c)
-Brand.find_or_create_by!(name: '碧&#28458;軒', kana: 'へきいけん', company: c)
+Brand.find_or_create_by!(name: '碧漪軒', kana: 'へきいけん', company: c)
 Brand.find_or_create_by!(name: '白金', kana: 'はっきん', company: c)
 
 

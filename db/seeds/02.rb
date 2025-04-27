@@ -191,10 +191,9 @@ Brand.find_or_create_by!(name: '喜久泉', kana: 'きくいずみ', company: c)
 c = Company.create_or_find_by!(name: '尾崎酒造', kana: 'おざきしゅぞう')
 address_attrs = { prefecture_code: 2, city: '西津軽郡', street_address: '鰺ヶ沢町漁師町30', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
-contact_attrs = { tel: '0173-72-2029', fax: '0173-72-6655', website: 'http://www.ozakishuzo.com' }
+contact_attrs = { tel: '0173-72-2029', fax: '0173-72-6655', website: 'https://ozakishuzo.jp/' }
 c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '鯵ヶ澤', kana: 'あじがさわ', company: c)
-Brand.find_or_create_by!(name: '白神山地の&#27205;', kana: 'しらかみさんちのぶな', company: c)
 Brand.find_or_create_by!(name: '岩木川', kana: 'いわきがわ', company: c)
 Brand.find_or_create_by!(name: 'ブナの白神', kana: 'ぶなのしらかみ', company: c)
 Brand.find_or_create_by!(name: '白神の金鮎', kana: 'しらかみのきんあゆ', company: c)
