@@ -5,7 +5,7 @@ class CreateContacts < ActiveRecord::Migration[8.0]
       t.bigint :contactable_id, null: false, comment: "関連ID"
       t.string :tel, comment: "電話番号"
       t.string :fax, comment: "FAX番号"
-      t.string :website, comment: "ウェブサイトURL"
+      t.string :website, comment: "HP URL"
       t.string :email, comment: "メールアドレス"
       t.string :instagram, comment: "Instagramアカウント"
       t.string :twitter, comment: "Twitterアカウント"

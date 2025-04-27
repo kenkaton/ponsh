@@ -2,8 +2,10 @@
   <div id="<%= dom_id brand %>">
     <!-- ブランド名ヘッダー -->
     <div class="pb-4 mb-4 border-b border-gray-200">
-      <h2 class="text-2xl font-bold"><%= brand.name %></h2>
-      <p class="text-gray-500 text-sm mt-1"><%= brand.kana %></p>
+      <div class="flex items-center gap-2">
+        <h2 class="text-2xl font-bold"><%= brand.name %></h2>
+        <span class="text-gray-500 text-sm"><%= brand.kana %></span>
+      </div>
     </div>
 
     <!-- 詳細情報 -->
@@ -17,12 +19,8 @@
               <td class="py-3 font-medium"><%= brand.name %></td>
             </tr>
             <tr class="border-b border-gray-100">
-              <th class="py-3 pr-4 text-left text-gray-600">フリガナ</th>
+              <th class="py-3 pr-4 text-left text-gray-600">ふりがな</th>
               <td class="py-3"><%= brand.kana %></td>
-            </tr>
-            <tr class="border-b border-gray-100">
-              <th class="py-3 pr-4 text-left text-gray-600">英語名</th>
-              <td class="py-3"><%= brand.name_en %></td>
             </tr>
             <tr>
               <th class="py-3 pr-4 text-left text-gray-600 align-top">詳細</th>
@@ -61,7 +59,7 @@
 
                 <% if brand.company.website.present? %>
                 <tr class="border-b border-gray-100">
-                  <th class="py-2 pr-4 text-left text-gray-600">ウェブサイト</th>
+                  <th class="py-2 pr-4 text-left text-gray-600">HP</th>
                   <td class="py-2">
                     <%= link_to brand.company.website, brand.company.website, target: "_blank", class: "text-blue-600 hover:underline" %>
                   </td>

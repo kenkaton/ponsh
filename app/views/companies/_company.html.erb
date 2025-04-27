@@ -2,8 +2,10 @@
   <div id="<%= dom_id company %>">
     <!-- 会社名ヘッダー -->
     <div class="pb-4 mb-4 border-b border-gray-200">
-      <h2 class="text-2xl font-bold"><%= company.name %></h2>
-      <p class="text-gray-500 text-sm mt-1"><%= company.kana %></p>
+      <div class="flex items-center gap-2">
+        <h2 class="text-2xl font-bold"><%= company.name %></h2>
+        <span class="text-gray-500 text-sm"><%= company.kana %></span>
+      </div>
     </div>
 
     <!-- 詳細情報 -->
@@ -17,12 +19,8 @@
               <td class="py-3 font-medium"><%= company.name %></td>
             </tr>
             <tr class="border-b border-gray-100">
-              <th class="py-3 pr-4 text-left text-gray-600">フリガナ</th>
+              <th class="py-3 pr-4 text-left text-gray-600">ふりがな</th>
               <td class="py-3"><%= company.kana %></td>
-            </tr>
-            <tr class="border-b border-gray-100">
-              <th class="py-3 pr-4 text-left text-gray-600">英語名</th>
-              <td class="py-3"><%= company.name_en %></td>
             </tr>
             <% if company.address.present? %>
             <tr class="border-b border-gray-100">
@@ -44,7 +42,7 @@
             <% end %>
             <% if company.website.present? %>
             <tr class="border-b border-gray-100">
-              <th class="py-3 pr-4 text-left text-gray-600">ウェブサイト</th>
+              <th class="py-3 pr-4 text-left text-gray-600">HP</th>
               <td class="py-3">
                 <%= link_to company.website, company.website, target: "_blank", class: "text-blue-600 hover:underline" %>
               </td>
@@ -64,5 +62,27 @@
       </div>
       <% end %>
     </div>
+
+    <!-- 銘柄一覧 -->
+    <% if company.brands.present? %>
+      <div class="mt-8">
+        <h3 class="font-bold text-xl mb-4 border-l-4 border-gray-500 pl-3">銘柄一覧</h3>
+        <div class="space-y-3">
+          <% company.brands.each do |brand| %>
+            <div class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
+                  <span class="text-sm text-gray-500"><%= brand.kana %></span>
+                </div>
+              </div>
+              <div>
+                <%= link_to '詳細', brand, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

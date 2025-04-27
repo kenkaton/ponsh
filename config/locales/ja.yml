@@ -37,14 +37,14 @@ ja:
     company_details: "酒蔵の詳細を見る"
     brand:  # _brand.html.erb 用
       name: "名前"
-      kana: "フリガナ"
+      kana: "ふりがな"
       name_en: "英語名"
       detail: "詳細"
       company: "酒蔵"
       company_name: "名前"
       company_address: "住所"
       company_tel: "電話番号"
-      company_website: "ウェブサイト"
+      company_website: "HP"
 
   # 会社関連
   companies:
@@ -62,14 +62,14 @@ ja:
       submit: "保存"
     company:  # _company.html.erb 用
       name: "名前"
-      kana: "フリガナ"
+      kana: "ふりがな"
       name_en: "英語名"
       prefecture_code: "都道府県"
       city: "市区町村"
       address: "住所"
       tel: "電話番号"
       fax: "FAX"
-      website: "ウェブサイト"
+      website: "HP"
       detail: "詳細"
 
   # モデル名と属性
@@ -80,7 +80,7 @@ ja:
     attributes:
       brand:
         name: "名前"
-        kana: "フリガナ"
+        kana: "ふりがな"
         name_en: "英語名"
         detail: "詳細"
         image: "画像"
@@ -88,14 +88,14 @@ ja:
       company:
         public_id: "公開ID"
         name: "名前"
-        kana: "フリガナ"
+        kana: "ふりがな"
         name_en: "英語名"
         prefecture_code: "都道府県"
         city: "市区町村"
         address: "住所"
         tel: "電話番号"
         fax: "FAX"
-        website: "ウェブサイト"
+        website: "HP"
         detail: "詳細"
 
   # エラーメッセージ

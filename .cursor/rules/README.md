@@ -328,7 +328,7 @@ erDiagram
         bigint id PK
         string public_id UK
         string name "店舗運営会社名"
-        string kana "フリガナ"
+        string kana "ふりがな"
         string corporate_number "法人番号"
         text detail "会社概要"
         datetime created_at
@@ -354,7 +354,7 @@ erDiagram
         bigint contactable_id "関連ID"
         string tel "電話番号"
         string fax "FAX番号"
-        string website "ウェブサイトURL"
+        string website "HP URL"
         string email "メールアドレス"
         string instagram "Instagramアカウント"
         string twitter "Twitterアカウント"
@@ -384,7 +384,7 @@ erDiagram
 *   **`related_media`**: 主要エンティティ（`companies`, `brands`, `products`, `stores`, `store_operators`）と、各種メディアテーブル（`web_articles`, `books`, `videos`）をポリモーフィックに紐付ける中間テーブルです。
 *   **`addresses`**: 住所情報を管理するテーブル。ポリモーフィック関連（`addressable`）により、`companies`, `stores`, `store_operators` など様々なエンティティの住所情報を一元管理します。
 *   **`google_maps`**: 住所（`addresses`）に対応する地図情報（緯度経度）を管理します。`addresses`テーブルと1対1の関係を持ちます。
-*   **`contacts`**: 連絡先情報（電話番号、FAX、ウェブサイト、メールアドレスなど）を管理するテーブル。ポリモーフィック関連（`contactable`）により、`companies`, `stores`, `store_operators` など様々なエンティティの連絡先情報を一元管理します。
+*   **`contacts`**: 連絡先情報（電話番号、FAX、HP、メールアドレスなど）を管理するテーブル。ポリモーフィック関連（`contactable`）により、`companies`, `stores`, `store_operators` など様々なエンティティの連絡先情報を一元管理します。
 *   **`company_status_histories`**: 会社（`companies`）のステータス変更履歴を管理します。
 *   **`shopping_platforms`**: 購入可能なECサイト（例: "Amazon", "楽天"）を定義します。
 *   **`shopping_links`**: 製品（`products`）を特定のECサイト（`shopping_platforms`）で購入するためのリンク情報（URL、価格など）を管理します。
