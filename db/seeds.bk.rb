@@ -6344,7 +6344,7 @@ Brand.find_or_create_by!(name: '杢左衛門', kana: 'もくざえもん', compa
 Brand.find_or_create_by!(name: '美少年', kana: 'びしょうねん', company: c)
 c = Company.create_or_find_by!(name: '通潤酒造', kana: 'つうじゅんしゅぞう', prefecture_code: 43, city: '上益城郡', address: '山都町浜町54', tel: '0967-72-1177', fax: '0967-72-0421', website: 'http://tuzyun.com')
 Brand.find_or_create_by!(name: '通潤', kana: 'つうじゅん', company: c)
-Brand.find_or_create_by!(name: '&#34796; SEMI', kana: 'せみ', company: c)
+Brand.find_or_create_by!(name: '蝉', kana: 'せみ', company: c)
 Brand.find_or_create_by!(name: '雲雀', kana: 'ひばり', company: c)
 Brand.find_or_create_by!(name: '蛍丸', kana: 'ほたるまる', company: c)
 Brand.find_or_create_by!(name: 'Soigner', kana: 'そわにえ', company: c)

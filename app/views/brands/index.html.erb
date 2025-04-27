@@ -15,7 +15,29 @@
 
   <div id="brands" class="space-y-4">
     <% if @brands.any? %>
-      <%= render partial: "brand_list_item", collection: @brands, as: :brand %>
+      <% @brands.each do |brand| %>
+        <%= link_to brand, class: "block w-full" do %>
+          <div id="<%= dom_id brand %>" class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50">
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
+                <span class="text-sm text-gray-500"><%= brand.kana %></span>
+              </div>
+              <% if brand.company.present? %>
+                <div class="mt-1 text-sm text-gray-600">
+                  <%= brand.company.name %>
+                  <% if brand.company.address.present? %>
+                    <span class="text-gray-400">/</span>
+                    <%= brand.company.address.prefecture.name %>
+                    <span class="text-gray-400">/</span>
+                    <%= brand.company.address.city %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     <% else %>
       <p class="text-center my-10"><%= t('brands.index.no_brands') %></p>
     <% end %>
