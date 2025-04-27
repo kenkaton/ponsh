@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # ActionCable for Hotwire Livereload in development
+  mount ActionCable.server => "/hotwire-livereload" if Rails.env.development?
+
   resources :companies, only: [ :show ]
   resources :brands, only: [ :index, :show ]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

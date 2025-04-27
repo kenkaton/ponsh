@@ -35,3 +35,13 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# vendorディレクトリの設定
+# Bundlerでインストールされたgemは無視する
+/vendor/bundle/
+
+# キャッシュディレクトリは必要に応じてコメントアウト
+# /vendor/cache/
+
+# vendorディレクトリ内の一時ファイルを無視
+/vendor/tmp/
