@@ -64,7 +64,7 @@ class BrandsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_brand
-      @brand = Brand.eager_load(company: [ :address, :contact, :google_map ]).find_by(public_id: params[:id])
+      @brand = Brand.eager_load(company: [ :address, :contact, :google_map, :brands ]).find_by(public_id: params[:id])
     end
 
     # Only allow a list of trusted parameters through.

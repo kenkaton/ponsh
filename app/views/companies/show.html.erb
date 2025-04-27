@@ -76,17 +76,19 @@
           <h3 class="font-bold text-xl mb-4 border-l-4 border-gray-500 pl-3">銘柄一覧</h3>
           <div class="space-y-3">
             <% @company.brands.each do |brand| %>
-              <div class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm">
-                <div class="flex-1">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
-                    <span class="text-sm text-gray-500"><%= brand.kana %></span>
+              <%= link_to brand, class: "block w-full" do %>
+                <div class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+                  <div class="flex-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
+                      <span class="text-sm text-gray-500"><%= brand.kana %></span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-blue-600 hover:text-blue-800 font-medium">詳細</span>
                   </div>
                 </div>
-                <div>
-                  <%= link_to '詳細', brand, class: "text-blue-600 hover:text-blue-800 font-medium" %>
-                </div>
-              </div>
+              <% end %>
             <% end %>
           </div>
         </div>

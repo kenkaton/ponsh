@@ -92,6 +92,30 @@
     </div>
   </div>
 
+  <!-- 同じ酒蔵の他の銘柄一覧 -->
+  <% if @brand.company&.brands&.present? && @brand.company.brands.count > 1 %>
+    <div class="mt-8">
+      <h3 class="font-bold text-xl mb-4 border-l-4 border-gray-500 pl-3">同じ酒蔵の他の銘柄一覧</h3>
+      <div class="space-y-3">
+        <% @brand.company.brands.where.not(id: @brand.id).each do |brand| %>
+          <%= link_to brand, class: "block w-full" do %>
+            <div class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-lg font-medium text-gray-900"><%= brand.name %></h3>
+                  <span class="text-sm text-gray-500"><%= brand.kana %></span>
+                </div>
+              </div>
+              <div>
+                <span class="text-blue-600 hover:text-blue-800 font-medium">詳細</span>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
 
   <%= link_to t('common.back'), request.referer.present? ? request.referer : brands_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
 </div>
