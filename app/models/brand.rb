@@ -3,6 +3,12 @@ class Brand < ApplicationRecord
 
   belongs_to :company
 
+  has_many :products, dependent: :destroy
+  has_many :award_winners, as: :winner, dependent: :destroy
+  has_many :awards, through: :award_winners
+  has_many :product_awards, through: :products
+  has_many :product_awards_awards, through: :product_awards, source: :award, class_name: "Award"
+
   before_save :fill_detail
 
   scope :search, lambda { |word|

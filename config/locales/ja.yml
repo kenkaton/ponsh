@@ -112,6 +112,10 @@ ja:
       too_long: "は%{count}文字以内で入力してください"
       not_a_number: "は数値で入力してください"
       not_an_integer: "は整数で入力してください"
+      record_invalid: "バリデーションに失敗しました: %{errors}"
+      restrict_dependent_destroy:
+        has_one: "%{record}が存在しているので削除できません"
+        has_many: "%{record}が存在しているので削除できません"
 
   searches:
     index:

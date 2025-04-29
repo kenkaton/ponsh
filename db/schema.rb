@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_13_111914) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_093938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_111914) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "award_winners", force: :cascade do |t|
+    t.bigint "award_id", null: false
+    t.string "winner_type", null: false
+    t.bigint "winner_id", null: false
+    t.string "note", comment: "特記事項（例：部門最高賞など）"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["award_id", "winner_type", "winner_id"], name: "index_award_winners_on_award_and_winner", unique: true
+    t.index ["award_id"], name: "index_award_winners_on_award_id"
+    t.index ["winner_type", "winner_id"], name: "index_award_winners_on_winner"
+  end
+
+  create_table "awards", force: :cascade do |t|
+    t.bigint "contest_edition_id", null: false
+    t.string "name", null: false, comment: "賞の名称（例：金賞、銀賞）"
+    t.string "code", null: false, comment: "賞のコード"
+    t.integer "rank", null: false, comment: "賞の順位（1が最高）"
+    t.text "description", comment: "賞の説明"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_edition_id", "code"], name: "index_awards_on_contest_edition_id_and_code", unique: true
+    t.index ["contest_edition_id"], name: "index_awards_on_contest_edition_id"
   end
 
   create_table "brands", force: :cascade do |t|
@@ -84,6 +108,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_111914) do
     t.index ["contactable_type", "contactable_id"], name: "index_contacts_on_contactable_type_and_contactable_id"
   end
 
+  create_table "contest_editions", force: :cascade do |t|
+    t.bigint "contest_id", null: false
+    t.integer "year", null: false, comment: "開催年度"
+    t.string "name", null: false, comment: "年度付きコンテスト名（例：第110回全国新酒鑑評会）"
+    t.date "held_on", comment: "開催日"
+    t.text "description", comment: "その年度のコンテストの説明"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id", "year"], name: "index_contest_editions_on_contest_id_and_year", unique: true
+    t.index ["contest_id"], name: "index_contest_editions_on_contest_id"
+  end
+
+  create_table "contests", force: :cascade do |t|
+    t.string "name", null: false, comment: "コンテスト名（例：全国新酒鑑評会）"
+    t.string "code", null: false, comment: "コンテストコード"
+    t.text "description", comment: "コンテストの説明"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_contests_on_code", unique: true
+  end
+
   create_table "google_maps", force: :cascade do |t|
     t.string "gmappable_type", null: false
     t.bigint "gmappable_id", null: false
@@ -95,5 +140,40 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_111914) do
     t.index ["gmappable_type", "gmappable_id"], name: "index_google_maps_on_gmappable"
   end
 
+  create_table "product_awards", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "award_id", null: false
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["award_id"], name: "index_product_awards_on_award_id"
+    t.index ["product_id", "award_id"], name: "index_product_awards_on_product_id_and_award_id", unique: true
+    t.index ["product_id"], name: "index_product_awards_on_product_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.bigint "brand_id", null: false
+    t.string "public_id", null: false
+    t.string "name", null: false
+    t.string "name_en"
+    t.text "detail"
+    t.integer "volume_ml"
+    t.float "alcohol_percentage"
+    t.string "jan_code"
+    t.date "release_date"
+    t.boolean "is_limited_edition", default: false
+    t.boolean "is_active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["brand_id"], name: "index_products_on_brand_id"
+    t.index ["public_id"], name: "index_products_on_public_id", unique: true
+  end
+
+  add_foreign_key "award_winners", "awards"
+  add_foreign_key "awards", "contest_editions"
   add_foreign_key "brands", "companies"
+  add_foreign_key "contest_editions", "contests"
+  add_foreign_key "product_awards", "awards"
+  add_foreign_key "product_awards", "products"
+  add_foreign_key "products", "brands"
 end

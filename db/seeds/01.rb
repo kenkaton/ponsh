@@ -151,3 +151,50 @@ c.contact || c.create_contact!(contact_attrs)
 CompanyStatusHistory.create!(company: c, event_type: :status_change, business_status: :closed)
 Brand.find_or_create_by!(name: '北見寒菊', kana: 'きたみかんぎく', company: c)
 Brand.find_or_create_by!(name: '栄光摩周', kana: 'えいこうましゅう', company: c)
+
+# 全国新酒鑑評会（令和5年度）の受賞情報
+contest = Contest.find_by!(code: 'zenkoku_shinshu')
+edition = contest.contest_editions.find_by!(year: 2023)
+
+# 金賞・入賞を取得
+gold_award = edition.awards.find_by!(code: 'gold')
+silver_award = edition.awards.find_by!(code: 'silver')
+
+# 受賞情報を登録する関数
+def create_brand_award(brand_name, award, note = nil)
+  # 類似の銘柄がないかチェック
+  similar_brands = Brand.where('name LIKE ?', "%#{brand_name}%")
+  if similar_brands.count > 1
+    puts "Warning: 「#{brand_name}」を含む銘柄が複数存在します：#{similar_brands.pluck(:name).join(', ')}"
+  end
+
+  # 北海道の銘柄を検索
+  brand = Brand.joins(company: :address)
+               .where(addresses: { prefecture_code: 1 })
+               .includes(:company)
+               .find_by!(name: brand_name)
+
+  AwardWinner.create_or_find_by!(
+    winner: brand,
+    award: award,
+    note: note
+  )
+end
+
+# 金賞受賞銘柄を登録
+[
+  [ '大雪乃蔵', '鳳雪' ],
+  [ '北の勝', '純米大吟醸' ]
+].each do |name, note|
+  create_brand_award(name, gold_award, note)
+end
+
+# 入賞銘柄を登録
+[
+  '三千櫻',
+  '千歳鶴'
+].each do |name|
+  create_brand_award(name, silver_award)
+end
+
+puts "令和5年度全国新酒鑑評会の受賞情報を登録しました。"

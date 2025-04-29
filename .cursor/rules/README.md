@@ -396,3 +396,106 @@ erDiagram
 *   **`product_tags`**: 製品（`products`）とタグ（`tags`）の間の多対多関係を管理します。
 
 この設計により、お酒の「ブランド」とその中の具体的な「製品」を明確に区別し、製品ごとにレビュー、価格、取り扱い店舗、カテゴリ、タグなどの情報を正確に紐付けて管理することが可能になります。また、レビューをブランド全体、製品個別、そして店舗に対しても行うことができます。Web記事、書籍、動画といった多様なメディア情報も、それぞれの特性に応じたテーブルで管理しつつ、主要なエンティティに柔軟に関連付けることができます。住所情報や連絡先情報も一元管理され、関連するエンティティと紐付けられます。
+
+## コンテスト受賞情報の管理
+
+以下は、お酒のコンテスト受賞情報を管理するためのデータベース設計です。
+
+```mermaid
+erDiagram
+    contests ||--o{ contest_editions : "has many"
+    contest_editions ||--o{ awards : "has many"
+    awards ||--o{ product_awards : "has many"
+    products ||--o{ product_awards : "has many"
+
+    contests {
+        bigint id PK
+        string name "コンテスト名（例：全国新酒鑑評会）"
+        string code "コンテストコード"
+        text description "コンテストの説明"
+        datetime created_at
+        datetime updated_at
+    }
+
+    contest_editions {
+        bigint id PK
+        bigint contest_id FK
+        integer year "開催年度"
+        string name "年度付きコンテスト名（例：第110回全国新酒鑑評会）"
+        date held_on "開催日"
+        text description "その年度のコンテストの説明"
+        datetime created_at
+        datetime updated_at
+    }
+
+    awards {
+        bigint id PK
+        bigint contest_edition_id FK
+        string name "賞の名称（例：金賞、銀賞）"
+        string code "賞のコード"
+        integer rank "賞の順位（1が最高）"
+        text description "賞の説明"
+        datetime created_at
+        datetime updated_at
+    }
+
+    product_awards {
+        bigint id PK
+        bigint product_id FK
+        bigint award_id FK
+        string note "特記事項（例：部門最高賞など）"
+        datetime created_at
+        datetime updated_at
+    }
+```
+
+この設計により、以下のような情報を管理できます：
+
+1. **コンテスト情報の階層構造**
+   - `contests`テーブル：コンテストの基本情報を管理
+   - `contest_editions`テーブル：年度ごとの開催情報を管理
+   - これにより、同じコンテストの異なる年度の情報を体系的に管理できます
+
+2. **賞の管理**
+   - `awards`テーブル：各コンテストの賞の種類を管理
+   - `rank`フィールドで賞の順位を数値化
+   - 同じ賞名でもコンテストによって意味が異なる場合に対応
+
+3. **受賞情報の紐付け**
+   - `product_awards`テーブル：製品と賞の関連付け
+   - `note`フィールドで特記事項を記録可能
+
+4. **既存の`products`テーブルとの連携**
+   - 既存の製品情報と受賞情報を関連付け
+   - 製品ごとの受賞履歴を追跡可能
+
+この設計により、以下のようなクエリを可能にします：
+- 特定の製品の受賞履歴
+- 特定のコンテストの受賞者一覧
+- 特定の年度の受賞情報
+- 賞の種類ごとの受賞者一覧
+
+必要に応じて、以下のような拡張も可能です：
+- 部門（category）情報の追加
+- 審査員情報の追加
+- 受賞時の製品の詳細情報（度数、精米歩合など）の記録
+
+## データ登録時の注意点
+
+1. **コンテスト情報の登録**
+   - `contests`テーブルには、主要なコンテスト（全国新酒鑑評会、IWC、Kura Masterなど）の基本情報を登録
+   - `code`フィールドには、コンテストの略称や識別子を設定（例：`zenkoku_shinshu`）
+
+2. **年度情報の管理**
+   - `contest_editions`テーブルの`year`フィールドは西暦で管理
+   - `name`フィールドには「第○回」などの回次を含めた正式名称を記録
+
+3. **賞の順位付け**
+   - `awards`テーブルの`rank`フィールドは、1が最高位となるように設定
+   - 同じコンテスト内で賞の順位が明確でない場合は、適切な数値を割り当て
+
+4. **特記事項の記録**
+   - `product_awards`テーブルの`note`フィールドには、以下のような情報を記録可能：
+     - 部門最高賞
+     - 特別賞
+     - 受賞時の製品の特徴（例：特定の精米歩合）
