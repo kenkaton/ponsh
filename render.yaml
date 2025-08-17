@@ -21,5 +21,5 @@ databases:
   - name: ponsh
     plan: free
     region: singapore
-    databaseName: prodpostgres
-    user: prodpostgres_user
+    databaseName: ponsh_production
+    user: ponsh_production_user
