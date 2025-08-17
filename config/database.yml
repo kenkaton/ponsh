@@ -89,8 +89,8 @@ production:
     <% if ENV["DATABASE_URL"] %>
     url: <%= ENV["DATABASE_URL"] %>
     <% else %>
-    database: ponsh_production
-    username: ponsh
+    database: prodpostgres
+    username: prodpostgres_user
     password: <%= ENV["PONSH_DATABASE_PASSWORD"] %>
     <% end %>
   cache:
