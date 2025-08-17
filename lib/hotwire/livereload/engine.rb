@@ -1,5 +1,3 @@
-require_relative "file_watcher"
-
 module Hotwire
   module Livereload
     class Engine < ::Rails::Engine
@@ -16,6 +14,7 @@ module Hotwire
           app.config.assets.paths << File.expand_path("../../../app/assets", __dir__)
           app.config.after_initialize do
             if app.config.hotwire_livereload.listen_paths.any?
+              require_relative "file_watcher"
               @watcher = Hotwire::Livereload::FileWatcher.new(
                 paths: app.config.hotwire_livereload.listen_paths,
                 force_reload_paths: app.config.hotwire_livereload.force_reload_paths,

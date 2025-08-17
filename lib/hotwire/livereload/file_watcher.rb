@@ -1,5 +1,3 @@
-require "listen"
-
 module Hotwire
   module Livereload
     class FileWatcher
@@ -11,6 +9,16 @@ module Hotwire
       end
 
       def start(&block)
+        # Only load listen gem in development
+        return unless Rails.env.development?
+
+        begin
+          require "listen"
+        rescue LoadError
+          Rails.logger.warn "Listen gem not available, skipping file watching"
+          return
+        end
+
         @callback = block
         @listener = Listen.to(*@paths, latency: 0.2, wait_for_delay: 0.2) do |modified, added, removed|
           changed_files = modified + added + removed
