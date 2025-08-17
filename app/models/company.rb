@@ -20,4 +20,9 @@ class Company < ApplicationRecord
   # 連絡先情報のデリゲート
   delegate :tel, :fax, :website, :email, :instagram, :twitter, :facebook, :line,
            to: :contact, allow_nil: true, prefix: false
+
+  # 都道府県コードで会社を絞り込むスコープ
+  scope :in_prefecture, ->(prefecture_code) {
+    joins(:address).where(addresses: { prefecture_code: prefecture_code })
+  }
 end

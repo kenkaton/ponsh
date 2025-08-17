@@ -89,7 +89,7 @@
         </div>
 
         <!-- 受賞歴セクション -->
-        <% if @brand.awards.present? || @brand.products.flat_map(&:product_awards).present? %>
+        <% if @brand.awards.present? || @brand.products.flat_map(&:awards).present? %>
           <div class="mb-6">
             <h2 class="font-bold text-lg mb-3 border-l-4 border-gray-500 pl-3">受賞歴</h2>
             <div class="pl-3">
@@ -102,7 +102,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% (@brand.awards + @brand.products.flat_map(&:product_awards_awards)).sort_by { |a| a.contest_edition.year }.reverse.each do |award| %>
+                  <% (@brand.awards + @brand.products.flat_map(&:awards)).uniq.sort_by { |a| [a.contest_edition.year, a.rank] }.reverse.each do |award| %>
                     <tr class="border-b border-gray-100">
                       <td class="py-2"><%= award.contest_edition.year %>年</td>
                       <td class="py-2"><%= award.contest_edition.contest.name %></td>
@@ -144,5 +144,5 @@
   <% end %>
 
 
-  <%= link_to t('common.back'), request.referer.present? ? request.referer : brands_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <%= link_to t('common.back'), request.referer.present? ? request.referer : brands_path, class: "w-full sm:w-auto text-center mt-2 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
 </div>

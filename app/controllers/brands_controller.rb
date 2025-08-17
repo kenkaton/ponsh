@@ -67,7 +67,7 @@ class BrandsController < ApplicationController
       @brand = Brand.eager_load(
         company: [ :address, :contact, :google_map, :brands ],
         awards: [ contest_edition: [ :contest ] ],
-        products: [ product_awards_awards: [ contest_edition: [ :contest ] ] ]
+        products: [ :awards, { awards: [ contest_edition: [ :contest ] ] } ]
       ).find_by(public_id: params[:id])
     end
 

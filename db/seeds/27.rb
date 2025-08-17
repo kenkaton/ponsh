@@ -1,4 +1,4 @@
-c = Company.create_or_find_by!(name: '呉春', kana: 'ごしゅん')
+c = Company.in_prefecture(27).find_or_create_by!(name: '呉春', kana: 'ごしゅん')
 address_attrs = { prefecture_code: 27, city: '池田市', street_address: '綾羽1-2-2', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-751-2023', contactable_type: 'Company' }
@@ -6,7 +6,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '呉春', kana: 'ごしゅん', company: c)
 
 
-c = Company.create_or_find_by!(name: '吉田酒造', kana: 'よしだしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '吉田酒造', kana: 'よしだしゅぞう')
 address_attrs = { prefecture_code: 27, city: '池田市', street_address: '栄本町7-10', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-751-2063', fax: '072-753-8881', website: 'http://www.midori-1.jp', contactable_type: 'Company' }
@@ -14,7 +14,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '緑一', kana: 'みどりいち', company: c)
 
 
-c = Company.create_or_find_by!(name: '秋鹿酒造', kana: 'あきしかしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '秋鹿酒造', kana: 'あきしかしゅぞう')
 address_attrs = { prefecture_code: 27, city: '豊能郡', street_address: '能勢町倉垣1007', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-737-0013', fax: '072-737-0840', contactable_type: 'Company' }
@@ -22,7 +22,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '秋鹿', kana: 'あきしか', company: c)
 
 
-c = Company.create_or_find_by!(name: '中尾酒造', kana: 'なかおしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '中尾酒造', kana: 'なかおしゅぞう')
 address_attrs = { prefecture_code: 27, city: '茨木市', street_address: '宿久庄5-32-12', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-643-2226', fax: '072-643-2518', website: 'http://bongu.jugem.jp', contactable_type: 'Company' }
@@ -33,14 +33,14 @@ Brand.find_or_create_by!(name: '龍泉', kana: 'りゅうせん', company: c)
 Brand.find_or_create_by!(name: '見山', kana: 'みやま', company: c)
 
 
-c = Company.create_or_find_by!(name: '高島酒造', kana: 'たかしましゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '高島酒造', kana: 'たかしましゅぞう')
 address_attrs = { prefecture_code: 27, city: '茨木市', street_address: '', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 CompanyStatusHistory.create!(company: c, event_type: :status_change, business_status: :closed)
 Brand.find_or_create_by!(name: '寿盃', kana: 'じゅはい', company: c)
 
 
-c = Company.create_or_find_by!(name: '寿酒造', kana: 'ことぶきしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '寿酒造', kana: 'ことぶきしゅぞう')
 address_attrs = { prefecture_code: 27, city: '高槻市', street_address: '富田町3-26-12', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-696-0003', fax: '072-693-1533', website: 'http://www.kuninocho.jp', contactable_type: 'Company' }
@@ -48,7 +48,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '國乃長', kana: 'くにのちょう', company: c)
 
 
-c = Company.create_or_find_by!(name: '清鶴酒造', kana: 'きよつるしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '清鶴酒造', kana: 'きよつるしゅぞう')
 address_attrs = { prefecture_code: 27, city: '高槻市', street_address: '富田町6-5-3', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-696-0014', fax: '072-692-0014', website: 'http://www.kiyotsuru.jp', contactable_type: 'Company' }
@@ -56,7 +56,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '清鶴', kana: 'きよつる', company: c)
 
 
-c = Company.create_or_find_by!(name: '大門酒造', kana: 'だいもんしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '大門酒造', kana: 'だいもんしゅぞう')
 address_attrs = { prefecture_code: 27, city: '交野市', street_address: '森南3-12-1', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-891-0353', fax: '072-891-0354', website: 'https://www.daimonbrewery.com', contactable_type: 'Company' }
@@ -67,7 +67,7 @@ Brand.find_or_create_by!(name: '大門 DAIMON', kana: 'だいもん', company: c
 Brand.find_or_create_by!(name: '利休梅', kana: 'りきゅうばい', company: c)
 
 
-c = Company.create_or_find_by!(name: '山野酒造', kana: 'やまのしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '山野酒造', kana: 'やまのしゅぞう')
 address_attrs = { prefecture_code: 27, city: '交野市', street_address: '私部7-11-2', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-891-1046', fax: '072-891-1846', website: 'https://www.katanosakura.com', contactable_type: 'Company' }
@@ -78,7 +78,7 @@ Brand.find_or_create_by!(name: '織姫の里', kana: 'おりひめのさと', co
 Brand.find_or_create_by!(name: '寝屋の長者', kana: 'ねやのちょうじゃ', company: c)
 
 
-c = Company.create_or_find_by!(name: '藤本雅一酒造醸', kana: 'ふじもとただひとしゅぞうじょう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '藤本雅一酒造醸', kana: 'ふじもとただひとしゅぞうじょう')
 address_attrs = { prefecture_code: 27, city: '藤井寺市', street_address: '藤井寺2-1-10', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-955-0018', fax: '072-955-0018', website: 'http://www.fujimotosyuzou.com', contactable_type: 'Company' }
@@ -90,7 +90,7 @@ Brand.find_or_create_by!(name: '冨士正', kana: 'ふじまさ', company: c)
 Brand.find_or_create_by!(name: '松花鶴', kana: 'しょうかづる', company: c)
 
 
-c = Company.create_or_find_by!(name: '西條', kana: 'さいじょう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '西條', kana: 'さいじょう')
 address_attrs = { prefecture_code: 27, city: '河内長野市', street_address: '長野町12-18', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '0721-55-1101', fax: '0721-56-1101', website: 'http://amanosake.com', contactable_type: 'Company' }
@@ -98,7 +98,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '天野酒', kana: 'あまのさけ', company: c)
 
 
-c = Company.create_or_find_by!(name: '利休蔵', kana: 'りきゅうぐら')
+c = Company.in_prefecture(27).find_or_create_by!(name: '利休蔵', kana: 'りきゅうぐら')
 address_attrs = { prefecture_code: 27, city: '堺市堺区', street_address: '甲斐町西3丁3-4', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-222-0707', website: 'https://sennorikyu-nihonshu.jp', contactable_type: 'Company' }
@@ -107,7 +107,7 @@ Brand.find_or_create_by!(name: '灘泉', kana: 'なだいずみ', company: c)
 Brand.find_or_create_by!(name: '千利休', kana: 'せんのりきゅう', company: c)
 
 
-c = Company.create_or_find_by!(name: '元朝', kana: 'がんちょう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '元朝', kana: 'がんちょう')
 address_attrs = { prefecture_code: 27, city: '岸和田市', street_address: '並松町22-30', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '0724-38-1518', fax: '0724-22-8528', website: 'https://gancho-sake.jimdo.com', contactable_type: 'Company' }
@@ -116,7 +116,7 @@ Brand.find_or_create_by!(name: '篁', kana: 'たかむら', company: c)
 Brand.find_or_create_by!(name: '元朝', kana: 'がんちょう', company: c)
 
 
-c = Company.create_or_find_by!(name: '井坂酒造場', kana: 'いさかしゅぞうじょう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '井坂酒造場', kana: 'いさかしゅぞうじょう')
 address_attrs = { prefecture_code: 27, city: '岸和田市', street_address: '稲葉町117', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-479-0074', contactable_type: 'Company' }
@@ -125,7 +125,7 @@ Brand.find_or_create_by!(name: '三輪福', kana: 'みわふく', company: c)
 Brand.find_or_create_by!(name: 'だんじり', kana: 'だんじり', company: c)
 
 
-c = Company.create_or_find_by!(name: '寺田酒造場', kana: 'てらだしゅぞうじょう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '寺田酒造場', kana: 'てらだしゅぞうじょう')
 address_attrs = { prefecture_code: 27, city: '貝塚市', street_address: '名越808-13', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '0724-46-1680', fax: '0724-46-2509', contactable_type: 'Company' }
@@ -134,7 +134,7 @@ Brand.find_or_create_by!(name: '千両菊', kana: 'せんりょうぎく', compa
 Brand.find_or_create_by!(name: '秀長', kana: 'しゅうちょう', company: c)
 
 
-c = Company.create_or_find_by!(name: '北庄司酒造店', kana: 'きたしょうじしゅぞうてん')
+c = Company.in_prefecture(27).find_or_create_by!(name: '北庄司酒造店', kana: 'きたしょうじしゅぞうてん')
 address_attrs = { prefecture_code: 27, city: '泉佐野市', street_address: '日根野3173', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-468-0850', fax: '072-467-2455', website: 'http://www.kitashouji.jp', contactable_type: 'Company' }
@@ -142,7 +142,7 @@ c.contact || c.create_contact!(contact_attrs)
 Brand.find_or_create_by!(name: '荘の郷', kana: 'しょうのさと', company: c)
 
 
-c = Company.create_or_find_by!(name: '田原酒造', kana: 'たはらしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '田原酒造', kana: 'たはらしゅぞう')
 address_attrs = { prefecture_code: 27, city: '泉南郡', street_address: '田尻町嘉祥寺904', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '0724-65-0066', contactable_type: 'Company' }
@@ -151,7 +151,7 @@ Brand.find_or_create_by!(name: '虎勢', kana: 'こせい', company: c)
 Brand.find_or_create_by!(name: '若夫婦', kana: 'わかふうふ', company: c)
 
 
-c = Company.create_or_find_by!(name: '浪花酒造', kana: 'なにわしゅぞう')
+c = Company.in_prefecture(27).find_or_create_by!(name: '浪花酒造', kana: 'なにわしゅぞう')
 address_attrs = { prefecture_code: 27, city: '阪南市', street_address: '尾崎町3-13-6', addressable_type: 'Company' }
 c.address || c.create_address!(address_attrs)
 contact_attrs = { tel: '072-472-0032', fax: '072-472-5000', website: 'http://www.naniwamasamune.com', contactable_type: 'Company' }

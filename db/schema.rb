@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_093938) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -140,22 +140,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_093938) do
     t.index ["gmappable_type", "gmappable_id"], name: "index_google_maps_on_gmappable"
   end
 
-  create_table "product_awards", force: :cascade do |t|
-    t.bigint "product_id", null: false
-    t.bigint "award_id", null: false
-    t.string "note"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["award_id"], name: "index_product_awards_on_award_id"
-    t.index ["product_id", "award_id"], name: "index_product_awards_on_product_id_and_award_id", unique: true
-    t.index ["product_id"], name: "index_product_awards_on_product_id"
-  end
-
   create_table "products", force: :cascade do |t|
     t.bigint "brand_id", null: false
     t.string "public_id", null: false
     t.string "name", null: false
     t.string "name_en"
+    t.string "kana"
+    t.integer "price"
     t.text "detail"
     t.integer "volume_ml"
     t.float "alcohol_percentage"
@@ -173,7 +164,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_093938) do
   add_foreign_key "awards", "contest_editions"
   add_foreign_key "brands", "companies"
   add_foreign_key "contest_editions", "contests"
-  add_foreign_key "product_awards", "awards"
-  add_foreign_key "product_awards", "products"
   add_foreign_key "products", "brands"
 end
