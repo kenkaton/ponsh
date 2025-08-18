@@ -14,7 +14,8 @@
       "Bash(docker exec:*)",
       "Bash(killall:*)",
       "Bash(docker:*)",
-      "WebFetch(domain:render.com)"
+      "WebFetch(domain:render.com)",
+      "Bash(printenv)"
     ],
     "deny": []
   }

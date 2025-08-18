@@ -1,6 +1,6 @@
 <% content_for :title, @brand.name %>
 
-<div class="md:w-2/3 w-full">
+<div class="md:w-2/3 w-full" data-controller="gtm" data-action="turbo:load->gtm#viewItem" data-item-name="<%= @brand.name %>" data-item-id="<%= @brand.id %>" data-item-category="brand">
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
   <% end %>
@@ -76,7 +76,7 @@
               </table>
 
               <div class="mt-4">
-                <%= link_to '酒蔵の詳細を見る', @brand.company, class: "inline-block text-blue-600 hover:text-blue-800 font-medium" if defined?(company_path) %>
+                <%= link_to '酒蔵の詳細を見る', @brand.company, class: "inline-block text-blue-600 hover:text-blue-800 font-medium", data: { action: "click->gtm#track", "gtm-event-value" => "view_company", "gtm-category-value" => "brand", "gtm-action-value" => "view_company", "gtm-label-value" => @brand.company.name } if @brand.company.present? %>
               </div>
 
               <div class="mt-6">
@@ -125,7 +125,7 @@
       <h3 class="font-bold text-xl mb-4 border-l-4 border-gray-500 pl-3">同じ酒蔵の他の銘柄一覧</h3>
       <div class="space-y-3">
         <% @brand.company.brands.where.not(id: @brand.id).each do |brand| %>
-          <%= link_to brand, class: "block w-full" do %>
+          <%= link_to brand, class: "block w-full", data: { action: "click->gtm#track", "gtm-event-value" => "view_related_brand", "gtm-category-value" => "brand", "gtm-action-value" => "view_related_brand", "gtm-label-value" => brand.name } do %>
             <div class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
               <div class="flex-1">
                 <div class="flex flex-wrap items-center gap-2">

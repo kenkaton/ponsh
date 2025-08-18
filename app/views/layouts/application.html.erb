@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html class="h-full">
   <head>
+    <%= render_gtm_head %>
     <title><%= content_for(:title) || "Ponsh" %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -28,7 +29,8 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-controller="search" class="flex flex-col min-h-screen">
+  <body data-controller="search gtm" class="flex flex-col min-h-screen" data-action="turbo:load->gtm#pageView">
+    <%= render_gtm_body %>
     <%= render 'shared/header' %>
     <div id="search-container" class="fixed z-10 w-full bg-white shadow-md top-16 hidden" data-search-target="container">
       <div class="container mx-auto px-5 py-4">

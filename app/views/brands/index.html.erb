@@ -16,7 +16,7 @@
   <div id="brands" class="space-y-4">
     <% if @brands.any? %>
       <% @brands.each do |brand| %>
-        <%= link_to brand, class: "block w-full" do %>
+        <%= link_to brand, class: "block w-full", data: { action: "click->gtm#track", "gtm-event-value" => "view_brand_from_list", "gtm-category-value" => "brand", "gtm-action-value" => "view_brand_from_list", "gtm-label-value" => brand.name } do %>
           <div id="<%= dom_id brand %>" class="w-full flex justify-between items-center p-4 border rounded-lg shadow-sm hover:bg-gray-50">
             <div class="flex-1">
               <div class="flex flex-wrap items-center gap-2">
