@@ -16,9 +16,7 @@ export default class extends Controller {
     }
   }
 
-  track(event) {
-    event.preventDefault()
-
+  track() {
     if (!window.dataLayer) {
       console.warn('GTM dataLayer not found')
       return
@@ -41,12 +39,7 @@ export default class extends Controller {
     console.log('GTM Event:', eventData)
     window.dataLayer.push(eventData)
 
-    // Continue with default action after tracking
-    if (event.target.href) {
-      setTimeout(() => {
-        window.location.href = event.target.href
-      }, 100)
-    }
+    // Don't prevent default - let the link work normally
   }
 
   pageView() {
