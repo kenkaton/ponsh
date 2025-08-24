@@ -74,4 +74,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "hotwire-livereload", "~> 2.0", :group => :development
+gem "hotwire-livereload", "~> 2.0", group: :development

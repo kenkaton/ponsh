@@ -2,26 +2,14 @@
 
 one:
   public_id: company_one
-  name: MyString
-  kana: MyString
-  name_en: MyString
-  prefecture_code: 1
-  city: MyString
-  address: MyString
-  tel: MyString
-  fax: MyString
-  website: MyString
-  detail: MyText
+  name: テスト酒造
+  kana: てすとしゅぞう
+  name_en: Test Brewery
+  detail: テスト用の酒造会社です
 
 two:
   public_id: company_two
-  name: MyString
-  kana: MyString
-  name_en: MyString
-  prefecture_code: 1
-  city: MyString
-  address: MyString
-  tel: MyString
-  fax: MyString
-  website: MyString
-  detail: MyText
+  name: サンプル醸造
+  kana: さんぷるじょうぞう
+  name_en: Sample Brewery
+  detail: サンプル用の醸造会社です

@@ -16,23 +16,27 @@ class Brand < ApplicationRecord
       prefecture_code = prefecture&.code
 
       # 優先順位を計算するCASE式を定義
-      priority_case =
+      like_pattern = "%#{sanitized_word}%"
+      priority_case = sanitize_sql_array([
         "CASE
-          WHEN brands.name LIKE '%#{sanitized_word}%' THEN 1
-          WHEN brands.kana LIKE '%#{sanitized_word}%' THEN 2
-          WHEN brands.name_en LIKE '%#{sanitized_word}%' THEN 3
-          WHEN companies.name LIKE '%#{sanitized_word}%' THEN 4
-          WHEN companies.kana LIKE '%#{sanitized_word}%' THEN 5
-          WHEN companies.name_en LIKE '%#{sanitized_word}%' THEN 6
-          WHEN addresses.zip_code LIKE '%#{sanitized_word}%' THEN 7
-          WHEN addresses.city LIKE '%#{sanitized_word}%' THEN 8
-          WHEN addresses.street_address LIKE '%#{sanitized_word}%' THEN 9
-          WHEN addresses.building_name LIKE '%#{sanitized_word}%' THEN 10
+          WHEN brands.name LIKE ? THEN 1
+          WHEN brands.kana LIKE ? THEN 2
+          WHEN brands.name_en LIKE ? THEN 3
+          WHEN companies.name LIKE ? THEN 4
+          WHEN companies.kana LIKE ? THEN 5
+          WHEN companies.name_en LIKE ? THEN 6
+          WHEN addresses.zip_code LIKE ? THEN 7
+          WHEN addresses.city LIKE ? THEN 8
+          WHEN addresses.street_address LIKE ? THEN 9
+          WHEN addresses.building_name LIKE ? THEN 10
           ELSE 11
-        END"
+        END",
+        like_pattern, like_pattern, like_pattern, like_pattern, like_pattern,
+        like_pattern, like_pattern, like_pattern, like_pattern, like_pattern
+      ])
 
       # PostgreSQL対応：SELECTに含める
-      relation = self.select("brands.*, #{priority_case} AS search_rank")
+      relation = self.select("brands.*, (#{priority_case}) AS search_rank")
                   .joins(:company)
                   .joins("LEFT JOIN addresses ON companies.id = addresses.addressable_id AND addresses.addressable_type = 'Company'")
 

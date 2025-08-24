@@ -5,44 +5,46 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
     @company = companies(:one)
   end
 
-  test "should get index" do
-    get companies_url
-    assert_response :success
-  end
+  # Routes only support show
+  # test "should get index" do
+  #   get companies_path
+  #   assert_response :success
+  # end
 
-  test "should get new" do
-    get new_company_url
-    assert_response :success
-  end
+  # test "should get new" do
+  #   get new_company_path
+  #   assert_response :success
+  # end
 
-  test "should create company" do
-    assert_difference("Company.count") do
-      post companies_url, params: { company: { address: @company.address, city: @company.city, detail: @company.detail, fax: @company.fax, kana: @company.kana, name: @company.name, name_en: @company.name_en, prefecture_code: @company.prefecture_code, public_id: @company.public_id, tel: @company.tel, website: @company.website } }
-    end
+  # test "should create company" do
+  #   assert_difference("Company.count") do
+  #     post companies_path, params: { company: { detail: @company.detail, kana: @company.kana, name: "新規テスト酒造", name_en: @company.name_en, public_id: "new_test_company" } }
+  #   end
 
-    assert_redirected_to company_url(Company.last)
-  end
+  #   assert_redirected_to company_path(Company.last)
+  # end
 
   test "should show company" do
-    get company_url(@company)
+    get company_path(@company)
     assert_response :success
   end
 
-  test "should get edit" do
-    get edit_company_url(@company)
-    assert_response :success
-  end
+  # Routes only support show
+  # test "should get edit" do
+  #   get edit_company_path(@company)
+  #   assert_response :success
+  # end
 
-  test "should update company" do
-    patch company_url(@company), params: { company: { address: @company.address, city: @company.city, detail: @company.detail, fax: @company.fax, kana: @company.kana, name: @company.name, name_en: @company.name_en, prefecture_code: @company.prefecture_code, public_id: @company.public_id, tel: @company.tel, website: @company.website } }
-    assert_redirected_to company_url(@company)
-  end
+  # test "should update company" do
+  #   patch company_path(@company), params: { company: { detail: @company.detail, kana: @company.kana, name: @company.name, name_en: @company.name_en, public_id: @company.public_id } }
+  #   assert_redirected_to company_path(@company)
+  # end
 
-  test "should destroy company" do
-    assert_difference("Company.count", -1) do
-      delete company_url(@company)
-    end
+  # test "should destroy company" do
+  #   assert_difference("Company.count", -1) do
+  #     delete company_path(@company)
+  #   end
 
-    assert_redirected_to companies_url
-  end
+  #   assert_redirected_to companies_path
+  # end
 end

@@ -37,4 +37,22 @@ module ApplicationHelper
       )
     end
   end
+
+  def safe_website_link(website, options = {})
+    return "" if website.blank?
+
+    # URI バリデーション
+    begin
+      uri = URI.parse(website)
+      return "" unless %w[http https].include?(uri.scheme)
+    rescue URI::InvalidURIError
+      return ""
+    end
+
+    text = options[:text] || truncate(website, length: options[:length] || 50)
+    link_to text, website,
+           target: "_blank",
+           rel: "noopener noreferrer",
+           class: options[:class] || "text-blue-600 hover:underline"
+  end
 end

@@ -15,7 +15,9 @@
       "Bash(killall:*)",
       "Bash(docker:*)",
       "WebFetch(domain:render.com)",
-      "Bash(printenv)"
+      "Bash(printenv)",
+      "Bash(bin/rubocop:*)",
+      "Bash(bin/brakeman:*)"
     ],
     "deny": []
   }
