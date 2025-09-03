@@ -10,6 +10,19 @@ class Brand < ApplicationRecord
 
   before_save :fill_detail
 
+  # EC API関連のスコープ
+  scope :needs_ec_refresh, -> {
+    where(last_ec_api_check_at: nil)
+      .or(where("last_ec_api_check_at < ?", 1.week.ago))
+  }
+
+  def should_refresh_ec_listings?
+    return true if last_ec_api_check_at.nil?
+
+    # APIチェックから1週間経過していれば更新（データの有無に関わらず）
+    last_ec_api_check_at < 1.week.ago
+  end
+
   def primary_image
     # 1. 手動設定された画像URLを優先（デフォルト画像でない場合）
     if image_url.present? && !image_url.include?("now_printing.jpg")
@@ -103,7 +116,8 @@ class Brand < ApplicationRecord
       # 重複排除と並び替え
       relation = relation.distinct("brands.id").order("search_rank ASC")
     else
-      all
+      # 検索キーワードがない場合は、ID順で並べる
+      order(:id)
     end
   }
 

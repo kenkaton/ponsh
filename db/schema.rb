@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_043809) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_092900) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,7 +61,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_043809) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "image_url", comment: "ブランド代表画像URL"
+    t.datetime "last_ec_api_check_at", comment: "最後にEC APIをチェックした日時"
+    t.boolean "last_ec_api_empty", default: false, comment: "最後のAPIチェックで結果が空だったか"
     t.index ["company_id"], name: "index_brands_on_company_id"
+    t.index ["last_ec_api_check_at"], name: "index_brands_on_last_ec_api_check_at"
+    t.index ["last_ec_api_empty"], name: "index_brands_on_last_ec_api_empty"
     t.index ["public_id"], name: "index_brands_on_public_id", unique: true
   end
 

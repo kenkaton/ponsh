@@ -7,7 +7,16 @@ class BrandsController < ApplicationController
 
     # 検索とeager_loadを同時に行い、paginate
     query_scope = Brand.search(@query)
-    @pagy, @brands = pagy(query_scope.eager_load(company: [ :address, :contact, :google_map ]))
+    @pagy, @brands = pagy(query_scope.eager_load(company: [ :address, :contact, :google_map ], ec_listings: []))
+
+    # EC listingsの非同期更新をトリガー
+    # 表示されている銘柄のうち、更新が必要なもののみを更新
+    brands_to_refresh = @brands.select(&:should_refresh_ec_listings?)
+
+    if brands_to_refresh.any?
+      Rails.logger.info "Triggering EC listings refresh for #{brands_to_refresh.size} brands"
+      RefreshEcListingsJob.perform_later(brands_to_refresh)
+    end
   end
 
   # GET /brands/1 or /brands/1.json

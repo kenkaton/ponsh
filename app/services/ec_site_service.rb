@@ -20,6 +20,14 @@ class EcSiteService
       amazon_results = search_amazon_products(keyword)
       results.concat(amazon_results)
 
+      # API結果をBrandに記録（Brandの場合のみ）
+      if listable.is_a?(Brand)
+        listable.update!(
+          last_ec_api_check_at: Time.current,
+          last_ec_api_empty: results.empty?
+        )
+      end
+
       # 古いデータをクリア
       clear_old_listings(listable)
 
@@ -29,6 +37,15 @@ class EcSiteService
       results
     rescue => e
       Rails.logger.error "EC site search error for #{listable.class} ##{listable.id}: #{e.message}"
+
+      # エラーが発生してもAPIチェック時刻は更新
+      if listable.is_a?(Brand)
+        listable.update!(
+          last_ec_api_check_at: Time.current,
+          last_ec_api_empty: true
+        )
+      end
+
       []
     end
 
