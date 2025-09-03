@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_040446) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_043809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -155,6 +155,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_040446) do
     t.integer "value_score", comment: "コストパフォーマンススコア(0-100)"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "alcohol_percentage", precision: 3, scale: 1, comment: "アルコール度数(%)"
+    t.decimal "sake_meter_value", precision: 4, scale: 1, comment: "日本酒度"
+    t.decimal "acidity", precision: 3, scale: 1, comment: "酸度"
+    t.string "sake_type", comment: "酒類分類（純米酒、本醸造酒など）"
+    t.string "prefecture", comment: "生産都道府県"
     t.index ["brand_name"], name: "index_ec_listings_on_brand_name"
     t.index ["extracted_attributes"], name: "index_ec_listings_on_extracted_attributes", using: :gin
     t.index ["jan_code"], name: "index_ec_listings_on_jan_code"
@@ -163,7 +168,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_040446) do
     t.index ["listable_type", "listable_id"], name: "index_ec_listings_on_listable"
     t.index ["maker"], name: "index_ec_listings_on_maker"
     t.index ["platform"], name: "index_ec_listings_on_platform"
+    t.index ["prefecture"], name: "index_ec_listings_on_prefecture"
     t.index ["rice_type"], name: "index_ec_listings_on_rice_type"
+    t.index ["sake_type"], name: "index_ec_listings_on_sake_type"
     t.index ["value_score"], name: "index_ec_listings_on_value_score"
     t.index ["volume_ml"], name: "index_ec_listings_on_volume_ml"
   end

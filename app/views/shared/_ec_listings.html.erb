@@ -6,6 +6,17 @@
     available_volumes = local_assigns[:available_volumes] || @available_volumes || EcListing.available_volumes_for(entity)
     available_rice_types = local_assigns[:available_rice_types] || @available_rice_types || EcListing.available_rice_types_for(entity)
     available_platforms = local_assigns[:available_platforms] || @available_platforms || all_listings.map(&:platform).uniq.sort
+    available_sake_types = local_assigns[:available_sake_types] || @available_sake_types || 
+      begin
+        # 酒類分類の表示順序を固定
+        sake_type_order = [
+          "純米大吟醸酒", "純米吟醸酒", "純米酒",
+          "大吟醸酒", "吟醸酒", "本醸造酒", "普通酒"
+        ]
+        listing_sake_types = all_listings.map(&:sake_type).compact.uniq
+        sake_type_order.select { |type| listing_sake_types.include?(type) } +
+        (listing_sake_types - sake_type_order).sort
+      end
     price_range = local_assigns[:price_range] || @price_range || EcListing.price_range_for(entity)
   %>
 
@@ -110,6 +121,29 @@
             </div>
           <% end %>
 
+          <!-- 酒類分類フィルタ -->
+          <% if available_sake_types.any? %>
+            <div class="mb-4">
+              <h4 class="font-medium text-sm mb-2">酒類分類</h4>
+              <div class="space-y-1">
+                <% available_sake_types.each do |sake_type| %>
+                  <label class="flex items-center text-sm">
+                    <input type="checkbox"
+                           class="mr-2"
+                           data-ec-filter-target="filter"
+                           data-filter-type="sakeType"
+                           data-filter-value="<%= sake_type %>"
+                           data-action="change->ec-filter#filter">
+                    <%= sake_type %>
+                    <span class="text-gray-500 ml-auto text-xs">
+                      <%= all_listings.select { |l| l.sake_type == sake_type }.count %>件
+                    </span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
           <!-- モールフィルタ -->
           <div class="mb-4">
             <h4 class="font-medium text-sm mb-2">モール</h4>
@@ -149,7 +183,8 @@
                  data-price="<%= listing.price %>"
                  data-value-score="<%= listing.value_score %>"
                  data-review-average="<%= listing.review_average || 0 %>"
-                 data-updated-at="<%= listing.last_updated_at&.to_i %>">
+                 data-updated-at="<%= listing.last_updated_at&.to_i %>"
+                 data-sake-type="<%= listing.sake_type %>">
 
               <a href="<%= listing.affiliate_url %>" target="_blank" rel="noopener noreferrer" class="flex gap-3 sm:gap-4">
                 <div class="flex-shrink-0">
@@ -186,19 +221,6 @@
                       <%= listing.formatted_price %>
                     </span>
 
-                    <!-- ml単価 -->
-                    <% if listing.price_per_ml %>
-                      <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                        ¥<%= listing.price_per_ml %>/ml
-                      </span>
-                    <% end %>
-
-                    <!-- コスパスコア -->
-                    <% if listing.value_score && listing.value_score > 0 %>
-                      <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                        CP <%= listing.value_score %>
-                      </span>
-                    <% end %>
                   </div>
 
                   <div class="flex items-center gap-2 sm:gap-3 flex-wrap mb-2 text-xs text-gray-600">
@@ -222,6 +244,27 @@
                     <% if listing.rice_type.present? %>
                       <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded">
                         <%= listing.rice_type %>
+                      </span>
+                    <% end %>
+
+                    <!-- 酒類分類 -->
+                    <% if listing.sake_type.present? %>
+                      <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                        <%= listing.sake_type %>
+                      </span>
+                    <% end %>
+
+                    <!-- 日本酒度 -->
+                    <% if listing.sake_meter_value.present? %>
+                      <span class="bg-cyan-100 text-cyan-700 px-2 py-1 rounded">
+                        日本酒度: <%= listing.sake_meter_value > 0 ? '+' : '' %><%= listing.sake_meter_value %>
+                      </span>
+                    <% end %>
+
+                    <!-- 酸度 -->
+                    <% if listing.acidity.present? %>
+                      <span class="bg-teal-100 text-teal-700 px-2 py-1 rounded">
+                        酸度: <%= listing.acidity %>
                       </span>
                     <% end %>
 

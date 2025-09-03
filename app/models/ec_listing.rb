@@ -2,12 +2,18 @@ class EcListing < ApplicationRecord
   belongs_to :listable, polymorphic: true
 
   PLATFORMS = %w[rakuten amazon].freeze
-  VOLUMES = [ 180, 300, 720, 900, 1800 ].freeze
+  VOLUMES = [ 180, 300, 500, 720, 900, 1800, 2000, 3000 ].freeze
 
   # 主要な酒米
   RICE_TYPES = [
     "山田錦", "五百万石", "雄町", "愛山", "美山錦", "吟風", "彗星",
     "きたしずく", "酒こまち", "出羽燦々", "八反錦", "越淡麗", "ひとごこち"
+  ].freeze
+
+  # 日本酒の分類
+  SAKE_TYPES = [
+    "純米大吟醸酒", "純米吟醸酒", "純米酒",
+    "大吟醸酒", "吟醸酒", "本醸造酒", "普通酒"
   ].freeze
 
   validates :platform, presence: true, inclusion: { in: PLATFORMS }
@@ -79,6 +85,17 @@ class EcListing < ApplicationRecord
   def volume_display
     return nil unless volume_ml
     volume_ml >= 1000 ? "#{volume_ml / 1000.0}L" : "#{volume_ml}ml"
+  end
+
+  # 日本酒の詳細情報の表示
+  def sake_details_display
+    details = []
+    details << "アルコール度数: #{alcohol_percentage}%" if alcohol_percentage.present?
+    details << "日本酒度: #{sake_meter_value > 0 ? '+' : ''}#{sake_meter_value}" if sake_meter_value.present?
+    details << "酸度: #{acidity}" if acidity.present?
+    details << "分類: #{sake_type}" if sake_type.present?
+    details << "産地: #{prefecture}" if prefecture.present?
+    details.join(" / ")
   end
 
   # クラスメソッド
@@ -170,8 +187,6 @@ class EcListing < ApplicationRecord
   def calculate_value_score
     # コストパフォーマンススコア（0-100）
     return unless price&.positive? && volume_ml&.positive?
-
-    base_score = 50.0
 
     # 価格効率（ml単価の逆数で評価）
     price_efficiency = volume_ml.to_f / price

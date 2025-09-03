@@ -84,6 +84,9 @@ class EcSiteService
         product = product_wrapper["Product"]
         next unless product&.dig("productName")
 
+        # リキュール系商品を除外
+        next if liqueur_product?(product)
+
         # 商品価格ナビAPIは商品レベルの情報のみ提供
         # productUrlPCから個別の商品ページ情報を作成
         listing_data = build_listing_data_from_product(product, "rakuten")
@@ -94,10 +97,12 @@ class EcSiteService
     end
 
     def build_listing_data_from_product(product, platform)
+      sake_details = extract_sake_details_from_product(product)
+
       {
         platform: platform,
         product_name: clean_product_name(product["productName"]),
-        product_url: build_rakuten_affiliate_url(product["productUrlPC"]),
+        product_url: build_rakuten_affiliate_url(product["affiliateUrl"]) || build_rakuten_affiliate_url(product["productUrlPC"]),
         image_url: select_best_image(product),
         price: product["minPrice"] || product["averagePrice"], # 最低価格または平均価格を使用
         shop_name: product["makerName"], # メーカー名を店舗名として使用
@@ -108,7 +113,13 @@ class EcSiteService
         brand_name: product["brandName"],
         volume_ml: extract_volume_from_product_details(product),
         is_available: product["itemCount"]&.positive?,
-        last_updated_at: Time.current
+        last_updated_at: Time.current,
+        # 日本酒の詳細データ
+        alcohol_percentage: sake_details[:alcohol_percentage],
+        sake_meter_value: sake_details[:sake_meter_value],
+        acidity: sake_details[:acidity],
+        sake_type: sake_details[:sake_type],
+        prefecture: sake_details[:prefecture]
       }
     end
 
@@ -146,14 +157,100 @@ class EcSiteService
 
       case volume_text.downcase
       when /(\d+)ml/
-        $1.to_i
+        volume = $1.to_i
+        # 500mlも許可（少量サイズ）、2000ml（2L）、3000ml（3L）も許可
+        return volume if [ 180, 300, 500, 720, 900, 1800, 2000, 3000 ].include?(volume)
+        volume
       when /(\d+\.?\d*)\s*l/i
-        ($1.to_f * 1000).to_i
+        volume = ($1.to_f * 1000).to_i
+        return volume if [ 180, 300, 500, 720, 900, 1800, 2000, 3000 ].include?(volume)
+        volume
       when /1\.8l/i, /1\.8\s*l/i
         1800
       else
         nil
       end
+    end
+
+    # 日本酒の詳細データを抽出（アルコール度数、日本酒度、酸度など）
+    def extract_sake_details_from_product(product)
+      details = product["ProductDetails"] || []
+      result = {}
+
+      # アルコール分の抽出と検証
+      alcohol_detail = details.find { |d| d.dig("detail", "name") == "アルコール分" }
+      if alcohol_detail&.dig("detail", "value") =~ /(\d+\.?\d*)%?/
+        alcohol_value = $1.to_f
+
+        # 妥当性チェック：範囲内（低アルコール8-12%、一般13-20%、原酒20%前後）&& 未設定でない
+        if alcohol_value.between?(8.0, 22.0) && alcohol_value != 0.0
+          result[:alcohol_percentage] = alcohol_value
+        end
+      end
+
+      # 日本酒度の抽出と検証（誤ってアルコール度数が入っていることがあるので注意）
+      sake_meter_detail = details.find { |d| d.dig("detail", "name") == "日本酒度" }
+      if sake_meter_detail&.dig("detail", "value") =~ /([+-]?\d+\.?\d*)/
+        sake_meter_value = $1.to_f
+
+        # 妥当性チェック：範囲内 && 誤記入でない && 未設定でない
+        if sake_meter_value.between?(-30.0, 30.0) &&
+           !(sake_meter_value >= 10.0 && sake_meter_value.to_s.include?(".")) &&
+           sake_meter_value != 0.0
+          result[:sake_meter_value] = sake_meter_value
+        end
+      end
+
+      # 酸度の抽出と検証（「清酒酸度」として記載されることもある）
+      acidity_detail = details.find { |d| d.dig("detail", "name") =~ /酸度/ }
+      if acidity_detail&.dig("detail", "value") =~ /(\d+\.?\d*)/
+        acidity_value = $1.to_f
+
+        # 妥当性チェック：範囲内（通常0.8〜2.0程度）&& 未設定でない
+        if acidity_value.between?(0.5, 3.0) && acidity_value != 0.0
+          result[:acidity] = acidity_value
+        end
+      end
+
+      # 酒類分類の抽出
+      sake_type_detail = details.find { |d| d.dig("detail", "name") == "酒類分類" }
+      if sake_type_detail
+        sake_type = sake_type_detail.dig("detail", "value")
+        result[:sake_type] = sake_type if sake_type && sake_type != "清酒" # "清酒"は一般的すぎるので除外
+      end
+
+      # ジャンル名からも酒類分類を補完
+      if result[:sake_type].blank? && product["genreName"].present?
+        result[:sake_type] = product["genreName"]
+      end
+
+      # 生産都道府県の抽出（スペースが含まれている場合があるので正規化）
+      prefecture_detail = details.find { |d| d.dig("detail", "name") == "生産都道府県" }
+      if prefecture_detail
+        prefecture = prefecture_detail.dig("detail", "value")
+        # "山　口" -> "山口"、"新　潟" -> "新潟" のようにスペースを除去
+        result[:prefecture] = prefecture.gsub(/[[:space:]]/, "") if prefecture.present?
+      end
+
+      # 追加: 酒類味分類（甘口・辛口）
+      taste_detail = details.find { |d| d.dig("detail", "name") == "酒類味分類" }
+      if taste_detail
+        taste = taste_detail.dig("detail", "value")
+        # extracted_attributesに保存
+        result[:extracted_attributes] ||= {}
+        result[:extracted_attributes]["taste_classification"] = taste
+      end
+
+      # 追加: 清酒濃淡度区分
+      density_detail = details.find { |d| d.dig("detail", "name") == "清酒濃淡度区分" }
+      if density_detail
+        density = density_detail.dig("detail", "value")
+        # extracted_attributesに保存
+        result[:extracted_attributes] ||= {}
+        result[:extracted_attributes]["density_classification"] = density
+      end
+
+      result
     end
 
     def build_rakuten_affiliate_url(product_url)
@@ -197,6 +294,19 @@ class EcSiteService
       listing_data[:product_name].present? &&
       listing_data[:product_url].present? &&
       listing_data[:price]&.positive?
+    end
+
+    def liqueur_product?(product)
+      # ジャンル名でリキュールを除外
+      if product["genreName"]&.include?("リキュール")
+        return true
+      end
+
+      # 商品名でリキュール系を除外（サワー、チューハイなど）
+      product_name = product["productName"] || ""
+      liqueur_keywords = %w[サワー チューハイ ハイボール カクテル リキュール]
+
+      liqueur_keywords.any? { |keyword| product_name.include?(keyword) }
     end
 
     # Amazon商品検索（将来実装用の構造）
@@ -259,7 +369,9 @@ class EcSiteService
             :product_name, :image_url, :price, :shop_name,
             :review_average, :review_count, :jan_code, :maker,
             :brand_name, :volume_ml, :is_available, :last_updated_at,
-            :search_keyword, :updated_at
+            :search_keyword, :updated_at,
+            :alcohol_percentage, :sake_meter_value, :acidity,
+            :sake_type, :prefecture
           ],
           record_timestamps: false
         )

@@ -58,7 +58,8 @@ export default class extends Controller {
     const filters = {
       volume: [],
       rice: [],
-      platform: []
+      platform: [],
+      sakeType: []
     }
 
     this.filterTargets.forEach((filter) => {
@@ -110,6 +111,14 @@ export default class extends Controller {
       }
     }
 
+    // 酒類分類フィルタ
+    if (filters.sakeType.length > 0) {
+      const itemSakeType = item.dataset.sakeType
+      if (!itemSakeType || !filters.sakeType.includes(itemSakeType)) {
+        return false
+      }
+    }
+
     return true
   }
 
@@ -125,6 +134,7 @@ export default class extends Controller {
           if (filterType === "volume" && item.dataset.volume === filterValue) count++
           if (filterType === "rice" && item.dataset.rice === filterValue) count++
           if (filterType === "platform" && item.dataset.platform === filterValue) count++
+          if (filterType === "sakeType" && item.dataset.sakeType === filterValue) count++
         }
       })
 
