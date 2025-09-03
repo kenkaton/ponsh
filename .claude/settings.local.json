@@ -17,7 +17,9 @@
       "WebFetch(domain:render.com)",
       "Bash(printenv)",
       "Bash(bin/rubocop:*)",
-      "Bash(bin/brakeman:*)"
+      "Bash(bin/brakeman:*)",
+      "WebFetch(domain:developers.google.com)",
+      "WebSearch"
     ],
     "deny": []
   }

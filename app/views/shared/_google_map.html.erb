@@ -9,24 +9,39 @@
       <div id="<%= map_id %>" class="w-full h-64 mt-2 border rounded shadow-sm"></div>
       <script>
         document.addEventListener('turbo:load', function() {
-          const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
-            center: {
-              lat: <%= entity.google_map.latitude %>,
-              lng: <%= entity.google_map.longitude %>
-            },
-            zoom: 15
-          });
+          try {
+            if (typeof google === 'undefined' || !google.maps) {
+              console.error('Google Maps APIが読み込まれていません');
+              return;
+            }
+            
+            const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
+              center: {
+                lat: <%= entity.google_map.latitude %>,
+                lng: <%= entity.google_map.longitude %>
+              },
+              zoom: 15
+            });
 
-          const marker = new google.maps.Marker({
-            position: {
-              lat: <%= entity.google_map.latitude %>,
-              lng: <%= entity.google_map.longitude %>
-            },
-            map: map,
-            title: '<%= entity.name %>'
-          });
+            const marker = new google.maps.Marker({
+              position: {
+                lat: <%= entity.google_map.latitude %>,
+                lng: <%= entity.google_map.longitude %>
+              },
+              map: map,
+              title: '<%= j(entity.name) %>'
+            });
+          } catch (error) {
+            console.error('Google Maps初期化エラー:', error);
+            document.getElementById('<%= map_id %>').innerHTML = '<p class="text-red-500 p-4">地図の読み込みに失敗しました</p>';
+          }
         });
       </script>
+    <% elsif entity.google_map&.address.present? %>
+      <div class="text-yellow-600 p-2 bg-yellow-50 rounded">
+        住所情報はありますが、位置情報の取得に失敗しています。<br>
+        <span class="text-sm">住所: <%= entity.google_map.address %></span>
+      </div>
     <% else %>
       <p class="text-gray-500">地図情報を読み込めません</p>
     <% end %>

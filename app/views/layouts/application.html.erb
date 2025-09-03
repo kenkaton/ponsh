@@ -25,7 +25,15 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&libraries=places"></script>
+    <% api_key = Rails.application.credentials.dig(:google, :maps_api_key) || ENV['GOOGLE_MAPS_API_KEY'] %>
+    <% if api_key.present? %>
+      <script src="https://maps.googleapis.com/maps/api/js?key=<%= api_key %>&libraries=places" onerror="console.error('Google Maps APIの読み込みに失敗しました')"></script>
+    <% else %>
+      <!-- Google Maps APIキーが設定されていません -->
+      <script>
+        console.warn('GOOGLE_MAPS_API_KEYが設定されていません。地図機能を利用するにはAPIキーを設定してください。');
+      </script>
+    <% end %>
 
     <%= javascript_importmap_tags %>
   </head>
