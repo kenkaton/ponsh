@@ -14,7 +14,7 @@
               console.error('Google Maps APIが読み込まれていません');
               return;
             }
-            
+
             const map = new google.maps.Map(document.getElementById('<%= map_id %>'), {
               center: {
                 lat: <%= entity.google_map.latitude %>,

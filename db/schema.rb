@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_000000) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_040446) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_000000) do
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_url", comment: "ブランド代表画像URL"
     t.index ["company_id"], name: "index_brands_on_company_id"
     t.index ["public_id"], name: "index_brands_on_public_id", unique: true
   end
@@ -127,6 +128,44 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_contests_on_code", unique: true
+  end
+
+  create_table "ec_listings", force: :cascade do |t|
+    t.string "listable_type", null: false
+    t.bigint "listable_id", null: false, comment: "関連エンティティ（Brand, Product等）"
+    t.string "platform", null: false, comment: "プラットフォーム（rakuten, amazon）"
+    t.string "product_name", null: false, comment: "商品名"
+    t.text "product_url", comment: "商品URL"
+    t.text "affiliate_url", comment: "アフィリエイトURL"
+    t.string "affiliate_tag", comment: "アフィリエイトタグ"
+    t.text "image_url", comment: "商品画像URL"
+    t.decimal "price", precision: 10, comment: "価格"
+    t.string "shop_name", comment: "店舗名"
+    t.decimal "review_average", precision: 3, scale: 2, comment: "レビュー平均"
+    t.integer "review_count", comment: "レビュー数"
+    t.string "search_keyword", comment: "検索に使用したキーワード"
+    t.boolean "is_available", default: true, comment: "商品が利用可能かどうか"
+    t.datetime "last_updated_at", comment: "最後に更新された日時"
+    t.integer "volume_ml", comment: "内容量(ml)"
+    t.string "rice_type", comment: "原料米"
+    t.jsonb "extracted_attributes", default: {}, comment: "抽出した属性"
+    t.string "jan_code", comment: "JANコード"
+    t.string "maker", comment: "メーカー名"
+    t.string "brand_name", comment: "ブランド名（API取得）"
+    t.integer "value_score", comment: "コストパフォーマンススコア(0-100)"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["brand_name"], name: "index_ec_listings_on_brand_name"
+    t.index ["extracted_attributes"], name: "index_ec_listings_on_extracted_attributes", using: :gin
+    t.index ["jan_code"], name: "index_ec_listings_on_jan_code"
+    t.index ["last_updated_at"], name: "index_ec_listings_on_last_updated_at"
+    t.index ["listable_type", "listable_id", "platform"], name: "index_ec_listings_on_listable_and_platform"
+    t.index ["listable_type", "listable_id"], name: "index_ec_listings_on_listable"
+    t.index ["maker"], name: "index_ec_listings_on_maker"
+    t.index ["platform"], name: "index_ec_listings_on_platform"
+    t.index ["rice_type"], name: "index_ec_listings_on_rice_type"
+    t.index ["value_score"], name: "index_ec_listings_on_value_score"
+    t.index ["volume_ml"], name: "index_ec_listings_on_volume_ml"
   end
 
   create_table "google_maps", force: :cascade do |t|

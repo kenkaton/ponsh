@@ -15,20 +15,47 @@
         </div>
       </div>
 
+      <!-- 画像ギャラリーセクション -->
+      <% if @brand.gallery_images.any? %>
+        <div class="mb-6">
+          <h2 class="font-bold text-lg mb-3 border-l-4 border-gray-500 pl-3">商品画像</h2>
+          <div data-controller="image-gallery">
+            <!-- メイン画像表示 -->
+            <div class="mb-4 flex justify-center lg:justify-start">
+              <img src="<%= @brand.primary_image %>"
+                   alt="<%= @brand.name %> メイン画像"
+                   class="w-32 h-32 rounded-lg shadow-md object-contain bg-white"
+                   data-image-gallery-target="mainImage"
+                   loading="lazy">
+            </div>
+
+            <!-- サムネイル画像（複数ある場合のみ表示） -->
+            <% if @brand.gallery_images.length > 1 %>
+              <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+                <% @brand.gallery_images.each_with_index do |image_url, index| %>
+                  <button class="thumbnail-btn border-2 rounded-md overflow-hidden hover:border-blue-500 transition-colors <%= index == 0 ? 'border-blue-500' : 'border-gray-200' %>"
+                          data-action="click->image-gallery#switchImage"
+                          data-image-url="<%= image_url %>"
+                          data-image-gallery-target="thumbnail">
+                    <img src="<%= image_url %>"
+                         alt="<%= @brand.name %> 画像 <%= index + 1 %>"
+                         class="w-full h-16 object-contain bg-white"
+                         loading="lazy">
+                  </button>
+                <% end %>
+              </div>
+            <% end %>
+
+          </div>
+        </div>
+      <% end %>
+
       <!-- 詳細情報 -->
       <div class="mb-6">
         <!-- 基本情報テーブル -->
         <div class="mb-6">
           <table class="w-full">
             <tbody>
-              <tr class="border-b border-gray-100">
-                <th class="py-3 pr-4 text-left text-gray-600 w-1/3">名前</th>
-                <td class="py-3 font-medium"><%= @brand.name %></td>
-              </tr>
-              <tr class="border-b border-gray-100">
-                <th class="py-3 pr-4 text-left text-gray-600">ふりがな</th>
-                <td class="py-3"><%= @brand.kana %></td>
-              </tr>
               <tr>
                 <th class="py-3 pr-4 text-left text-gray-600 align-top">詳細</th>
                 <td class="py-3"><%= @brand.detail %></td>
@@ -87,6 +114,9 @@
             <div class="text-gray-500">情報なし</div>
           <% end %>
         </div>
+
+        <!-- ECサイト商品セクション -->
+        <%= render 'shared/ec_listings', entity: @brand %>
 
         <!-- 受賞歴セクション -->
         <% if @brand.awards.present? || @brand.products.flat_map(&:awards).present? %>

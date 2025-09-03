@@ -12,6 +12,26 @@ class BrandsController < ApplicationController
 
   # GET /brands/1 or /brands/1.json
   def show
+    # ECリスティングはeager_loadされているので、loaded?を使って効率的に確認
+    if @brand.ec_listings.loaded?
+      stale_listings = @brand.ec_listings.select(&:stale?)
+      if stale_listings.any? || @brand.ec_listings.empty?
+        RefreshEcListingsJob.perform_later(@brand) if defined?(RefreshEcListingsJob)
+      end
+    else
+      # 念のため、eager_loadされていない場合の処理
+      if @brand.ec_listings.stale.exists? || !@brand.ec_listings.exists?
+        RefreshEcListingsJob.perform_later(@brand) if defined?(RefreshEcListingsJob)
+      end
+    end
+
+    # ビューで使用するEC関連データを事前に準備
+    @ec_listings = @brand.ec_listings.available.recent.to_a
+    @available_volumes = @ec_listings.map(&:volume_ml).compact.uniq.sort
+    @available_rice_types = @ec_listings.map(&:rice_type).compact.uniq.sort
+    @available_platforms = @ec_listings.map(&:platform).uniq.sort
+    prices = @ec_listings.map(&:price).compact
+    @price_range = prices.empty? ? [ 0, 0 ] : [ prices.min, prices.max ]
   end
 
   # GET /brands/new
@@ -67,7 +87,8 @@ class BrandsController < ApplicationController
       @brand = Brand.eager_load(
         company: [ :address, :contact, :google_map, :brands ],
         awards: [ contest_edition: [ :contest ] ],
-        products: [ :awards, { awards: [ contest_edition: [ :contest ] ] } ]
+        products: [ :awards, { awards: [ contest_edition: [ :contest ] ] } ],
+        ec_listings: []
       ).find_by(public_id: params[:id])
     end
 

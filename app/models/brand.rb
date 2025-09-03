@@ -6,8 +6,52 @@ class Brand < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :award_winners, as: :winner, dependent: :destroy
   has_many :awards, through: :award_winners
+  has_many :ec_listings, as: :listable, dependent: :destroy
 
   before_save :fill_detail
+
+  def primary_image
+    # 1. 手動設定された画像URLを優先（デフォルト画像でない場合）
+    if image_url.present? && !image_url.include?("now_printing.jpg")
+      return image_url
+    end
+
+    # 2. ECリスティングから画像を取得（デフォルト画像を除外）
+    # eager_loadされている場合はメモリ上で処理
+    if ec_listings.loaded?
+      ec_listings
+        .select { |l| l.is_available && l.image_url.present? && !l.image_url.include?("now_printing.jpg") }
+        .first&.image_url
+    else
+      ec_listings.available
+        .where.not(image_url: nil)
+        .where.not("image_url LIKE ?", "%now_printing.jpg%")
+        .first&.image_url
+    end
+  end
+
+  def gallery_images
+    # ECリスティングから複数の画像を取得（重複除去、デフォルト画像除外）
+    # eager_loadされている場合はメモリ上で処理
+    images = if ec_listings.loaded?
+      ec_listings
+        .select { |l| l.is_available && l.image_url.present? && !l.image_url.include?("now_printing.jpg") }
+        .map(&:image_url)
+        .uniq
+    else
+      ec_listings.available
+        .where.not(image_url: nil)
+        .where.not("image_url LIKE ?", "%now_printing.jpg%")
+        .pluck(:image_url).uniq
+    end
+
+    # 代表画像を先頭にして、他の画像と合わせる
+    if primary_image.present?
+      ([ primary_image ] + images).uniq
+    else
+      images
+    end
+  end
 
   scope :search, lambda { |word|
     if word.present?
