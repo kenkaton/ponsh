@@ -326,14 +326,274 @@ class EcSiteService
       liqueur_keywords.any? { |keyword| product_name.include?(keyword) }
     end
 
-    # Amazon商品検索（将来実装用の構造）
+    # Amazon商品検索
     def search_amazon_products(keyword)
       return [] unless amazon_configured?
 
-      # TODO: Amazon Product Advertising API v5.0の実装
-      # 現在は空の配列を返す
+      begin
+        response = fetch_amazon_products(keyword)
+        parse_amazon_response(response)
+      rescue => e
+        Rails.logger.error "Amazon API error: #{e.message}"
+        []
+      end
+    end
+
+    def fetch_amazon_products(keyword)
+      client = initialize_paapi_client
+
+      # paapi gemはキーワード引数を使用
+      options = {
+        Keywords: keyword,
+        SearchIndex: "Grocery", # 食品・飲料カテゴリ
+        Resources: [
+          "ItemInfo.Title",
+          "ItemInfo.Features",
+          "ItemInfo.ManufactureInfo",
+          "ItemInfo.ProductInfo",
+          "ItemInfo.ContentInfo",
+          "ItemInfo.TechnicalInfo",
+          "Images.Primary.Large",
+          "Offers.Listings.Price",
+          "Offers.Listings.Availability.Message",
+          "Offers.Summaries.HighestPrice",
+          "Offers.Summaries.LowestPrice",
+          "BrowseNodeInfo.BrowseNodes",
+          "CustomerReviews.StarRating",
+          "CustomerReviews.Count"
+        ],
+        ItemCount: 20,
+        Merchant: "All",
+        MinReviewsRating: 1,
+        Availability: "Available"
+      }
+
+      # 日本酒カテゴリでフィルタリング（BrowseNode）
+      # 71588051: 日本酒カテゴリ
+      options[:BrowseNodeId] = "71588051" if keyword.include?("日本酒")
+
+      client.search_items(**options)
+    end
+
+    def initialize_paapi_client
+      Paapi::Client.new(
+        access_key: amazon_access_key,
+        secret_key: amazon_secret_key,
+        market: :jp,
+        partner_tag: amazon_partner_tag
+      )
+    rescue => e
+      raise ConfigurationError, "Failed to initialize Amazon API client: #{e.message}"
+    end
+
+    def parse_amazon_response(response)
+      return [] unless response&.items
+
+      results = []
+
+      response.items.each do |item|
+        next unless item&.item_info&.title&.display_value
+
+        # リキュール系商品を除外
+        next if liqueur_product_amazon?(item)
+
+        listing_data = build_listing_data_from_amazon(item, "amazon")
+        results << listing_data if valid_listing?(listing_data)
+      end
+
+      results
+    rescue => e
+      Rails.logger.error "Failed to parse Amazon response: #{e.message}"
       []
     end
+
+    def build_listing_data_from_amazon(item, platform)
+      sake_details = extract_sake_details_from_amazon(item)
+
+      {
+        platform: platform,
+        product_name: clean_product_name(item.item_info.title.display_value),
+        product_url: item.detail_page_url,
+        image_url: extract_amazon_image(item),
+        price: extract_amazon_price(item),
+        shop_name: extract_amazon_shop(item),
+        review_average: extract_amazon_review_average(item),
+        review_count: extract_amazon_review_count(item),
+        jan_code: extract_amazon_jan(item),
+        maker: extract_amazon_maker(item),
+        brand_name: extract_amazon_brand(item),
+        volume_ml: extract_amazon_volume(item),
+        is_available: extract_amazon_availability(item),
+        last_updated_at: Time.current,
+        affiliate_tag: amazon_partner_tag,
+        asin: item.asin, # Amazon Standard Identification Number
+        # 日本酒の詳細データ
+        alcohol_percentage: sake_details[:alcohol_percentage],
+        sake_meter_value: sake_details[:sake_meter_value],
+        acidity: sake_details[:acidity],
+        sake_type: sake_details[:sake_type],
+        prefecture: sake_details[:prefecture]
+      }
+    end
+
+    def extract_amazon_image(item)
+      item&.images&.primary&.large&.url
+    end
+
+    def extract_amazon_price(item)
+      # 最初の利用可能な価格を取得
+      if item&.offers&.listings&.any?
+        listing = item.offers.listings.first
+        if listing&.price&.amount
+          (listing.price.amount * 100).to_i # 円に変換
+        end
+      elsif item&.offers&.summaries&.any?
+        summary = item.offers.summaries.first
+        if summary&.lowest_price&.amount
+          (summary.lowest_price.amount * 100).to_i
+        end
+      end
+    end
+
+    def extract_amazon_shop(item)
+      if item&.offers&.listings&.any?
+        item.offers.listings.first&.merchant_info&.name
+      else
+        "Amazon.co.jp"
+      end
+    end
+
+    def extract_amazon_review_average(item)
+      item&.customer_reviews&.star_rating&.value
+    end
+
+    def extract_amazon_review_count(item)
+      item&.customer_reviews&.count
+    end
+
+    def extract_amazon_jan(item)
+      # EAN/JANコードを取得
+      item&.item_info&.external_ids&.ea_ns&.first&.display_values&.first ||
+      item&.item_info&.external_ids&.upcs&.first&.display_values&.first
+    end
+
+    def extract_amazon_maker(item)
+      item&.item_info&.manufacture_info&.item_part_number&.display_value ||
+      item&.item_info&.by_line_info&.manufacturer&.display_value
+    end
+
+    def extract_amazon_brand(item)
+      item&.item_info&.by_line_info&.brand&.display_value ||
+      item&.item_info&.manufacture_info&.model&.display_value
+    end
+
+    def extract_amazon_volume(item)
+      # 商品情報から容量を抽出
+      volume_text = nil
+
+      # ContentInfoから容量を取得
+      if item&.item_info&.content_info&.edition&.display_value
+        volume_text = item.item_info.content_info.edition.display_value
+      end
+
+      # Featuresから容量を検索
+      if volume_text.nil? && item&.item_info&.features&.display_values
+        item.item_info.features.display_values.each do |feature|
+          if feature =~ /(\d+)\s*ml|(\d+\.?\d*)\s*L/i
+            volume_text = feature
+            break
+          end
+        end
+      end
+
+      # タイトルから容量を抽出
+      if volume_text.nil? && item&.item_info&.title&.display_value
+        volume_text = item.item_info.title.display_value
+      end
+
+      parse_volume_text(volume_text)
+    end
+
+    def extract_amazon_availability(item)
+      if item&.offers&.listings&.any?
+        availability = item.offers.listings.first&.availability&.message
+        availability.nil? || !availability.downcase.include?("在庫切れ")
+      else
+        false
+      end
+    end
+
+    def extract_sake_details_from_amazon(item)
+      result = {}
+
+      # Featuresから日本酒の詳細を抽出
+      if item&.item_info&.features&.display_values
+        item.item_info.features.display_values.each do |feature|
+          # アルコール度数
+          if feature =~ /アルコール[度分]?\s*[:：]?\s*(\d+\.?\d*)%?/
+            result[:alcohol_percentage] = $1.to_f if $1.to_f.between?(8.0, 22.0)
+          end
+
+          # 日本酒度
+          if feature =~ /日本酒度\s*[:：]?\s*([+-]?\d+\.?\d*)/
+            value = $1.to_f
+            result[:sake_meter_value] = value if value.between?(-30.0, 30.0)
+          end
+
+          # 酸度
+          if feature =~ /酸度\s*[:：]?\s*(\d+\.?\d*)/
+            value = $1.to_f
+            result[:acidity] = value if value.between?(0.5, 3.0)
+          end
+
+          # 都道府県
+          if feature =~ /産地|生産地|都道府県/
+            # 都道府県名を抽出
+            japanese_prefectures = [
+              "北海道", "青森", "岩手", "宮城", "秋田", "山形", "福島",
+              "茨城", "栃木", "群馬", "埼玉", "千葉", "東京", "神奈川",
+              "新潟", "富山", "石川", "福井", "山梨", "長野", "岐阜",
+              "静岡", "愛知", "三重", "滋賀", "京都", "大阪", "兵庫",
+              "奈良", "和歌山", "鳥取", "島根", "岡山", "広島", "山口",
+              "徳島", "香川", "愛媛", "高知", "福岡", "佐賀", "長崎",
+              "熊本", "大分", "宮崎", "鹿児島", "沖縄"
+            ]
+
+            japanese_prefectures.each do |pref|
+              if feature.include?(pref)
+                result[:prefecture] = pref
+                break
+              end
+            end
+          end
+        end
+      end
+
+      # タイトルから酒類分類を推定
+      title = item&.item_info&.title&.display_value || ""
+      SAKE_TYPES.each do |sake_type|
+        if title.include?(sake_type)
+          result[:sake_type] = sake_type
+          break
+        end
+      end
+
+      result
+    end
+
+    def liqueur_product_amazon?(item)
+      title = item&.item_info&.title&.display_value || ""
+
+      # リキュール系キーワードをチェック
+      liqueur_keywords = %w[リキュール サワー チューハイ ハイボール カクテル]
+      liqueur_keywords.any? { |keyword| title.include?(keyword) }
+    end
+
+    # 酒類分類の定数を追加
+    SAKE_TYPES = [
+      "純米大吟醸", "純米吟醸", "特別純米", "純米酒",
+      "大吟醸", "吟醸", "特別本醸造", "本醸造"
+    ]
 
     # データベース操作
     def clear_old_listings(listable)
@@ -457,6 +717,10 @@ class EcSiteService
 
     def amazon_secret_key
       Rails.application.credentials.dig(:amazon, :secret_key)
+    end
+
+    def amazon_partner_tag
+      Rails.application.credentials.dig(:amazon, :partner_tag)
     end
   end
 end

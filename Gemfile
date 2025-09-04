@@ -40,6 +40,9 @@ gem "pagy"
 # Geocoding solution for address to coordinates
 gem "geocoder"
 
+# Amazon Product Advertising API
+gem "paapi", "~> 0.1.0"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

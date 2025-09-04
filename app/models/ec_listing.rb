@@ -23,6 +23,7 @@ class EcListing < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than: 0 }
   validates :volume_ml, inclusion: { in: VOLUMES }, allow_nil: true
   validates :rice_type, inclusion: { in: RICE_TYPES }, allow_nil: true
+  validates :asin, presence: true, if: :amazon_platform?
 
   before_save :extract_and_normalize_attributes
   before_save :calculate_value_score
@@ -75,6 +76,10 @@ class EcListing < ApplicationRecord
     else
       product_url
     end
+  end
+
+  def amazon_platform?
+    platform == "amazon"
   end
 
   def review_summary
