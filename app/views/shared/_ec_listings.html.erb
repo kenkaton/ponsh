@@ -6,7 +6,7 @@
     available_volumes = local_assigns[:available_volumes] || @available_volumes || EcListing.available_volumes_for(entity)
     available_rice_types = local_assigns[:available_rice_types] || @available_rice_types || EcListing.available_rice_types_for(entity)
     available_platforms = local_assigns[:available_platforms] || @available_platforms || all_listings.map(&:platform).uniq.sort
-    available_sake_types = local_assigns[:available_sake_types] || @available_sake_types || 
+    available_sake_types = local_assigns[:available_sake_types] || @available_sake_types ||
       begin
         # 酒類分類の表示順序を固定
         sake_type_order = [
@@ -302,6 +302,16 @@
           フィルタ条件を変更してお試しください。
         </div>
 
+        <!-- アフィリエイト開示文言 -->
+        <div class="mt-6 p-3 bg-gray-50 rounded text-xs text-gray-500 border border-gray-200">
+          <p class="mb-1">
+            当サイトはAmazonアソシエイトプログラムに参加しており、商品購入時に紹介料を得る場合があります。
+          </p>
+          <p>
+            価格・在庫は変動する可能性があります。最新情報は各サイトでご確認ください。
+          </p>
+        </div>
+
         <!-- もっと見るリンク -->
         <div class="mt-6 text-center space-y-2">
           <a href="https://search.rakuten.co.jp/search/mall/<%= CGI.escape(entity.name + ' 日本酒') %>/"
@@ -310,7 +320,7 @@
              class="inline-block text-blue-600 hover:text-blue-800 text-sm mr-4">
             楽天市場でもっと見る →
           </a>
-          <a href="https://www.amazon.co.jp/s?k=<%= CGI.escape(entity.name + ' 日本酒') %>"
+          <a href="<%= entity.respond_to?(:amazon_search_url) ? entity.amazon_search_url : "https://www.amazon.co.jp/s?k=#{CGI.escape(entity.name + ' 日本酒')}" %>"
              target="_blank"
              rel="noopener noreferrer"
              class="inline-block text-blue-600 hover:text-blue-800 text-sm">
@@ -335,12 +345,19 @@
            class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
           楽天市場で検索
         </a>
-        <a href="https://www.amazon.co.jp/s?k=<%= CGI.escape(entity.name + ' 日本酒') %>"
+        <a href="<%= entity.respond_to?(:amazon_search_url) ? entity.amazon_search_url : "https://www.amazon.co.jp/s?k=#{CGI.escape(entity.name + ' 日本酒')}" %>"
            target="_blank"
            rel="noopener noreferrer"
            class="inline-block bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors">
           Amazonで検索
         </a>
+      </div>
+
+      <!-- アフィリエイト開示文言 -->
+      <div class="mt-4 p-2 bg-gray-50 rounded text-xs text-gray-500">
+        <p>
+          当サイトはAmazonアソシエイトプログラムに参加しています。
+        </p>
       </div>
     </div>
   <% end %>

@@ -23,6 +23,14 @@ class Brand < ApplicationRecord
     last_ec_api_check_at < 1.week.ago
   end
 
+  def amazon_search_url(affiliate_tag: "ponsh-web-22")
+    search_term = build_amazon_search_term
+    encoded_term = CGI.escape(search_term)
+
+    "https://www.amazon.co.jp/s?k=#{encoded_term}&linkCode=ll2&tag=#{affiliate_tag}" \
+    "&linkId=#{generate_link_id(search_term)}&language=ja_JP&ref_=as_li_ss_tl"
+  end
+
   def primary_image
     # 1. 手動設定された画像URLを優先（デフォルト画像でない場合）
     if image_url.present? && !image_url.include?("now_printing.jpg")
@@ -126,6 +134,16 @@ class Brand < ApplicationRecord
   }
 
   private
+
+  def build_amazon_search_term
+    # ブランド名 + "日本酒" で検索
+    "#{name} 日本酒"
+  end
+
+  def generate_link_id(search_term)
+    # 検索語をベースにしたハッシュを生成（Amazon アソシエイト要求）
+    Digest::MD5.hexdigest("#{search_term}-#{id}")[0, 16]
+  end
 
   def fill_detail
     self.detail ||= ""
