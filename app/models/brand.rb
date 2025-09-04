@@ -93,7 +93,7 @@ class Brand < ApplicationRecord
       ])
 
       # PostgreSQL対応：SELECTに含める
-      relation = self.select("brands.*, (#{priority_case}) AS search_rank")
+      relation = self.select("DISTINCT ON (brands.id) brands.*, (#{priority_case}) AS search_rank")
                   .joins(:company)
                   .joins("LEFT JOIN addresses ON companies.id = addresses.addressable_id AND addresses.addressable_type = 'Company'")
 
@@ -113,8 +113,12 @@ class Brand < ApplicationRecord
         )
       end
 
-      # 重複排除と並び替え
-      relation = relation.distinct("brands.id").order("search_rank ASC")
+      # PostgreSQL用：DISTINCT ONとORDER BYの最初のカラムは一致する必要がある
+      # まずbrands.idで重複を排除してから、search_rankでソート
+      relation = relation.order("brands.id, search_rank ASC")
+
+      # サブクエリを使って再度search_rankでソート
+      Brand.from(relation, :brands).order("search_rank ASC")
     else
       # 検索キーワードがない場合は、ID順で並べる
       order(:id)
