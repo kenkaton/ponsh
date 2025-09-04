@@ -342,13 +342,13 @@
         <a href="https://search.rakuten.co.jp/search/mall/<%= CGI.escape(entity.name + ' 日本酒') %>/"
            target="_blank"
            rel="noopener noreferrer"
-           class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
+           class="inline-block bg-slate-600 text-white px-4 py-2 rounded hover:bg-slate-700 transition-colors shadow-sm">
           楽天市場で検索
         </a>
         <a href="<%= entity.respond_to?(:amazon_search_url) ? entity.amazon_search_url : "https://www.amazon.co.jp/s?k=#{CGI.escape(entity.name + ' 日本酒')}" %>"
            target="_blank"
            rel="noopener noreferrer"
-           class="inline-block bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors">
+           class="inline-block bg-slate-600 text-white px-4 py-2 rounded hover:bg-slate-700 transition-colors shadow-sm">
           Amazonで検索
         </a>
       </div>
