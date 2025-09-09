@@ -14,30 +14,53 @@
     <%# </nav> %>
 
     <div class="flex items-center space-x-4">
-      <a href="<%= brands_path %>" class="text-gray-600 hover:text-gray-900">
+      <a href="<%= brands_path %>" class="text-gray-600 hover:text-gray-900" title="検索">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </a>
-      <%# <a href="#" class="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-md transition duration-300 transform hover:scale-110" title="ログイン"> %>
-        <%# <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> %>
-          <%# <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> %>
-        <%# </svg> %>
-      <%# </a> %>
+
+      <% if rodauth.logged_in? %>
+        <!-- ログイン済みユーザー用ドロップダウン -->
+        <div class="hidden md:block relative" data-controller="toggle">
+          <button class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-600 hover:bg-gray-700 text-white shadow-md transition duration-300 transform hover:scale-110"
+                  data-action="click->toggle#toggle"
+                  title="アカウントメニュー">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </button>
+
+          <!-- ドロップダウンメニュー -->
+          <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" data-toggle-target="element">
+            <%# <div class="px-4 py-2 border-b"> %>
+              <%# <p class="text-sm text-gray-900 font-medium"><%= rodauth.account.email %></p> %>
+            <%# </div> %>
+            <%= link_to "アカウント設定", rodauth.account_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" if rodauth.features.include?(:change_password) %>
+            <%= link_to "ログアウト", rodauth.logout_path, method: :post, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
+          </div>
+        </div>
+      <% else %>
+        <!-- 未ログインユーザー用ボタン -->
+        <div class="hidden md:flex space-x-2">
+          <%= link_to "ログイン", rodauth.login_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= link_to "新規登録", rodauth.create_account_path, class: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
 
       <!-- モバイルメニューボタン -->
-      <%# <button class="md:hidden text-gray-600 focus:outline-none" id="mobile-menu-button" %>
-              <%# data-action="click->toggle#toggle"> %>
-        <%# <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> %>
-          <%# <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /> %>
-        <%# </svg> %>
-      <%# </button> %>
+      <button class="md:hidden text-gray-600 focus:outline-none" id="mobile-menu-button"
+              data-action="click->toggle#toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
   </div>
 
   <!-- モバイルメニュー (デフォルトでは非表示) -->
-  <div class="md:hidden hidden bg-white pb-4 px-5" id="mobile-menu" data-toggle-target="element">
-    <nav class="flex flex-col space-y-3">
+  <div class="md:hidden hidden bg-white pb-4 px-5 border-t" id="mobile-menu" data-toggle-target="element">
+    <nav class="flex flex-col space-y-3 pt-3">
       <a href="/" class="text-gray-600 hover:text-gray-900 py-2">ホーム</a>
       <a href="#" class="text-gray-600 hover:text-gray-900 py-2">日本酒を探す</a>
       <a href="#" class="text-gray-600 hover:text-gray-900 py-2">酒蔵を探す</a>
@@ -48,12 +71,43 @@
         </svg>
         検索
       </a>
-      <a href="#" class="text-gray-600 hover:text-gray-900 py-2 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-        </svg>
-        ログイン
-      </a>
+
+      <div class="border-t pt-3 mt-3">
+        <% if rodauth.logged_in? %>
+          <!-- ログイン済みモバイルメニュー -->
+          <div class="pb-3 border-b">
+            <p class="text-sm text-gray-500">ログイン中</p>
+            <%# <p class="text-sm text-gray-900 font-medium"><%= rodauth.account.email %></p> %>
+          </div>
+          <div class="pt-3 space-y-3">
+            <% if rodauth.features.include?(:change_password) %>
+              <%= link_to "アカウント設定", rodauth.account_path, class: "text-gray-600 hover:text-gray-900 py-2 flex items-center" %>
+            <% end %>
+            <%= link_to rodauth.logout_path, method: :post, class: "text-gray-600 hover:text-gray-900 py-2 flex items-center" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              ログアウト
+            <% end %>
+          </div>
+        <% else %>
+          <!-- 未ログインモバイルメニュー -->
+          <div class="space-y-3">
+            <%= link_to rodauth.login_path, class: "text-gray-600 hover:text-gray-900 py-2 flex items-center" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              ログイン
+            <% end %>
+            <%= link_to rodauth.create_account_path, class: "text-blue-600 hover:text-blue-800 py-2 flex items-center font-medium" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+              新規登録
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </nav>
   </div>
 </header>

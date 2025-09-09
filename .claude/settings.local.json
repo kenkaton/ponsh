@@ -19,7 +19,10 @@
       "Bash(bin/rubocop:*)",
       "Bash(bin/brakeman:*)",
       "WebFetch(domain:developers.google.com)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:techracho.bpsinc.jp)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:rodauth.jeremyevans.net)"
     ],
     "deny": []
   }

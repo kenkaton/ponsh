@@ -22,9 +22,16 @@ gem "jbuilder"
 gem "jp_prefecture"
 # Static pages
 gem "high_voltage", "~> 4.0.0"
+# Authentication solution
+gem "rodauth-rails"
+gem "webauthn"
 
+# Enables Sequel to use Active Record's database connection
+gem "sequel-activerecord_connection", "~> 2.0", require: false
+# Used by Rodauth for password hashing
+gem "tilt", "~> 2.4", require: false
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -69,6 +76,8 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  # Hot reloading for Turbo and Stimulus controllers
+  gem "hotwire-livereload", "~> 2.0"
 end
 
 group :test do
@@ -76,5 +85,3 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-
-gem "hotwire-livereload", "~> 2.0", group: :development
