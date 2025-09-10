@@ -33,9 +33,9 @@
 
           <!-- ドロップダウンメニュー -->
           <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" data-toggle-target="element">
-            <%# <div class="px-4 py-2 border-b"> %>
-              <%# <p class="text-sm text-gray-900 font-medium"><%= rodauth.account.email %></p> %>
-            <%# </div> %>
+            <div class="px-4 py-2 border-b">
+              <p class="text-sm text-gray-900 font-medium"><%= current_account.display_name %></p>
+            </div>
             <%= link_to "アカウント設定", rodauth.account_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" if rodauth.features.include?(:change_password) %>
             <%= link_to "ログアウト", rodauth.logout_path, method: :post, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
           </div>
@@ -77,7 +77,7 @@
           <!-- ログイン済みモバイルメニュー -->
           <div class="pb-3 border-b">
             <p class="text-sm text-gray-500">ログイン中</p>
-            <%# <p class="text-sm text-gray-900 font-medium"><%= rodauth.account.email %></p> %>
+            <p class="text-sm text-gray-900 font-medium"><%= current_account.display_name %></p>
           </div>
           <div class="pt-3 space-y-3">
             <% if rodauth.features.include?(:change_password) %>
