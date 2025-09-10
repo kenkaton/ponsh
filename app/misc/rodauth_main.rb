@@ -122,14 +122,24 @@ class RodauthMain < Rodauth::Rails::Auth
 
     # ==> Hooks
     # Validate custom fields in the create account form.
-    # before_create_account do
-    #   throw_error_status(422, "name", "must be present") if param("name").empty?
-    # end
+    before_create_account do
+      display_name = param_or_nil("display_name")
+      if display_name.blank?
+        throw_error_status(422, "display_name", "表示名を入力してください")
+      elsif display_name.length < 2
+        throw_error_status(422, "display_name", "表示名は2文字以上で入力してください")
+      elsif display_name.length > 32
+        throw_error_status(422, "display_name", "表示名は32文字以内で入力してください")
+      elsif display_name.match?(/<|>|\/|\\/)
+        throw_error_status(422, "display_name", "使用できない文字（<>\/\\）が含まれています")
+      end
+    end
 
     # Perform additional actions after the account is created.
-    # after_create_account do
-    #   Profile.create!(account_id: account_id, name: param("name"))
-    # end
+    after_create_account do
+      account = Account.find(account_id)
+      account.update!(display_name: param("display_name"))
+    end
 
     # Do additional cleanup after the account is closed.
     # after_close_account do
