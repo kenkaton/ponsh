@@ -24,6 +24,7 @@ gem "jp_prefecture"
 gem "high_voltage", "~> 4.0.0"
 # Authentication solution
 gem "rodauth-rails"
+gem "rodauth-i18n"
 gem "webauthn"
 
 # Enables Sequel to use Active Record's database connection

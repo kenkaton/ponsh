@@ -10,7 +10,8 @@ class RodauthMain < Rodauth::Rails::Auth
     #   :close_account,
     #   :webauthn, :webauthn_login, :webauthn_autofill, :webauthn_verify_account
     enable :create_account, :verify_account, :login, :logout, :remember, :close_account,
-      :webauthn, :webauthn_login, :webauthn_autofill, :webauthn_verify_account
+      :webauthn, :webauthn_login, :webauthn_autofill, :webauthn_verify_account,
+      :i18n
 
     # See the Rodauth documentation for the list of available config options:
     # http://rodauth.jeremyevans.net/documentation.html
