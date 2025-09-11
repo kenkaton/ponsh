@@ -19,6 +19,7 @@ export default class extends Controller {
 
   // 設定定数
   static MOBILE_ELEMENTS = ["mobile-search", "mobile-menu"]
+  static DROPDOWN_ELEMENTS = ["account-menu"]
   static SEARCH_ELEMENT_ID = "mobile-search"
   static FOCUS_DELAY = 100 // ms
   static HIDDEN_CLASS = "hidden"
@@ -80,7 +81,9 @@ export default class extends Controller {
    */
   toggleElementById(targetId) {
     const element = this.findElementById(targetId)
-    if (!element) return
+    if (!element) {
+      return
+    }
 
     const wasHidden = this.isHidden(element)
 
@@ -101,7 +104,27 @@ export default class extends Controller {
    */
   toggleElementTarget() {
     if (this.hasElementTarget) {
-      this.toggleElementVisibility(this.elementTarget)
+      const element = this.elementTarget
+      const wasHidden = this.isHidden(element)
+
+      if (wasHidden) {
+        // element targetの場合、IDがあれば対応する処理を実行
+        const elementId = element.id
+        if (elementId) {
+          this.beforeShow(elementId)
+        }
+      }
+
+      this.toggleElementVisibility(element)
+
+      // ドロップダウン要素の場合のみ外側クリックリスナーを管理
+      if (element.id && this.isDropdownElement(element.id)) {
+        this.manageOutsideClickListener(wasHidden)
+      }
+
+      if (wasHidden && element.id) {
+        this.afterShow(element.id, element)
+      }
     }
   }
 
@@ -112,6 +135,8 @@ export default class extends Controller {
   beforeShow(targetId) {
     if (this.isMobileElement(targetId)) {
       this.closeOtherMobileElements(targetId)
+    } else if (this.isDropdownElement(targetId)) {
+      this.closeOtherDropdownElements(targetId)
     }
   }
 
@@ -142,6 +167,47 @@ export default class extends Controller {
   }
 
   /**
+   * 指定要素以外のドロップダウン要素を閉じる
+   * @param {string} currentTargetId - 現在操作中の要素ID
+   */
+  closeOtherDropdownElements(currentTargetId) {
+    this.constructor.DROPDOWN_ELEMENTS
+      .filter(id => id !== currentTargetId)
+      .forEach(id => {
+        const element = this.findElementById(id)
+        if (element && !this.isHidden(element)) {
+          this.hideElement(element)
+        }
+      })
+  }
+
+  /**
+   * ドロップダウン要素の外側クリックで閉じる
+   * @param {Event} event - クリックイベント
+   * @returns {boolean} 何かの要素が閉じられたかどうか
+   */
+  closeOutsideDropdownElements(event) {
+    let closedAny = false
+
+    this.constructor.DROPDOWN_ELEMENTS.forEach(id => {
+      const element = this.findElementById(id)
+      if (element && !this.isHidden(element)) {
+        // トリガーボタンを見つける
+        const triggerButton = this.findTriggerButtonForElement(id)
+
+        // クリックが要素の外側かつトリガーボタンでもない場合のみ閉じる
+        if (!element.contains(event.target) &&
+            (!triggerButton || !triggerButton.contains(event.target))) {
+          this.hideElement(element)
+          closedAny = true
+        }
+      }
+    })
+
+    return closedAny
+  }
+
+  /**
    * 検索入力欄にフォーカスを設定
    * @param {HTMLElement} element - 検索要素
    */
@@ -159,11 +225,17 @@ export default class extends Controller {
    * @param {Event} event - クリックイベント
    */
   handleOutsideClick(event) {
+    let closedAny = false
+
+    // モバイル要素のチェック（ヘッダー外クリック）
     const header = document.querySelector('header')
+    if (this.isClickOutsideHeader(event, header)) {
+      closedAny = this.closeAllMobileElements() || closedAny
+    }
 
-    if (!this.isClickOutsideHeader(event, header)) return
+    // ドロップダウン要素のチェック（要素外クリック）
+    closedAny = this.closeOutsideDropdownElements(event) || closedAny
 
-    const closedAny = this.closeAllMobileElements()
     if (closedAny) {
       this.removeOutsideClickListener()
     }
@@ -267,6 +339,15 @@ export default class extends Controller {
   }
 
   /**
+   * ドロップダウン要素かどうかを判定
+   * @param {string} elementId - 要素ID
+   * @returns {boolean}
+   */
+  isDropdownElement(elementId) {
+    return this.constructor.DROPDOWN_ELEMENTS.includes(elementId)
+  }
+
+  /**
    * 検索要素かどうかを判定
    * @param {string} elementId - 要素ID
    * @returns {boolean}
@@ -283,5 +364,14 @@ export default class extends Controller {
    */
   isClickOutsideHeader(event, header) {
     return header && !header.contains(event.target)
+  }
+
+  /**
+   * 指定した要素のトリガーボタンを見つける
+   * @param {string} elementId - 対象要素のID
+   * @returns {HTMLElement|null}
+   */
+  findTriggerButtonForElement(elementId) {
+    return document.querySelector(`[data-target="${elementId}"]`)
   }
 }
