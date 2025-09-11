@@ -4,19 +4,7 @@
 
 import { application } from "controllers/application"
 import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
+
+// Eager load all controllers from the controllers directory
+// This automatically registers all *_controller.js files
 eagerLoadControllersFrom("controllers", application)
-
-// エラーの原因となっていた部分を完全に削除
-// 以下はコメントアウトしています
-
-// コントローラーを直接インポート
-import HelloController from "controllers/hello_controller"
-import ToggleController from "controllers/toggle_controller"
-import SearchController from "controllers/search_controller"
-import GtmController from "controllers/gtm_controller"
-
-// コントローラーを登録
-application.register("hello", HelloController)
-application.register("toggle", ToggleController)
-application.register("search", SearchController)
-application.register("gtm", GtmController)
