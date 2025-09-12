@@ -35,7 +35,7 @@
       <% @comments.each do |comment| %>
         <%= render 'comments/comment', comment: comment, commentable: @commentable %>
       <% end %>
-      
+
       <!-- Pagination -->
       <% if respond_to?(:pagy_nav) %>
         <div class="mt-8 flex justify-center">

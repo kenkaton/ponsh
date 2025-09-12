@@ -36,8 +36,8 @@ class ApplicationController < ActionController::Base
 
   # 段階的導入用の一時メソッド
   def skip_pundit?
-    # Skip Pundit in development unless explicitly enabled
-    return true if Rails.env.development? && ENV["ENABLE_PUNDIT"] != "true"
+    # Skip Pundit in development and test unless explicitly enabled
+    return true if (Rails.env.development? || Rails.env.test?) && ENV["ENABLE_PUNDIT"] != "true"
 
     # Skip Pundit for system controllers and routes
     return true if controller_name == "rails/health"
