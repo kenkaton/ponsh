@@ -147,7 +147,7 @@ class CommentTest < ActiveSupport::TestCase
   test "should update updated_at when body changes" do
     original_updated_at = @comment.updated_at
     sleep 0.1 # Ensure time difference
-    
+
     @comment.update!(body: "更新されたコメント")
     assert @comment.updated_at > original_updated_at
   end
