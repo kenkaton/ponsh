@@ -1,0 +1,12 @@
+<% content_for :title, "コメント詳細" %>
+
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-gray-900">コメント詳細</h2>
+      <%= link_to "一覧に戻る", [@commentable, :comments], class: "text-blue-600 hover:text-blue-800" %>
+    </div>
+  </div>
+
+  <%= render 'comment', comment: @comment, commentable: @commentable %>
+</div>

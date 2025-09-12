@@ -2,16 +2,16 @@
 
 one:
   public_id: brand_one
-  name: MyString
-  kana: MyString
-  name_en: MyString
-  detail: MyText
+  name: テスト銘柄1
+  kana: てすとめいがらいち
+  name_en: Test Brand One
+  detail: テスト用の銘柄です
   company: one
 
 two:
   public_id: brand_two
-  name: MyString
-  kana: MyString
-  name_en: MyString
-  detail: MyText
+  name: テスト銘柄2
+  kana: てすとめいがらに
+  name_en: Test Brand Two
+  detail: テスト用の銘柄です
   company: two
