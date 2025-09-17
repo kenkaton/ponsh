@@ -18,15 +18,17 @@ services:
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
     depends_on:
-    - selenium
-    - postgres
+      postgres:
+        condition: service_healthy
+      selenium:
+        condition: service_started
 
   selenium:
     image: selenium/standalone-chromium
     restart: unless-stopped
 
   postgres:
-    image: postgres:16.1
+    image: postgres:17
     restart: unless-stopped
     networks:
     - default
@@ -35,6 +37,11 @@ services:
     environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d postgres || exit 1"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
 
 volumes:
   postgres-data:

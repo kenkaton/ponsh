@@ -19,7 +19,8 @@ services:
 
 databases:
   - name: ponsh
-    plan: free
+    plan: basic-256mb
+    postgresMajorVersion: "17"
     region: singapore
     databaseName: ponsh_production
     user: ponsh_production_user

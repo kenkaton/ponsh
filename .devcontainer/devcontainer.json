@@ -4,6 +4,7 @@
   "name": "ponsh",
   "dockerComposeFile": "compose.yaml",
   "service": "rails-app",
+  "runServices": ["postgres", "selenium", "rails-app"],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
