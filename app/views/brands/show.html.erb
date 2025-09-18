@@ -144,6 +144,68 @@
             </div>
           </div>
         <% end %>
+
+        <!-- コメントセクション -->
+        <div class="mb-6" id="comments">
+          <h2 class="font-bold text-lg mb-3 border-l-4 border-gray-500 pl-3">
+            コメント
+            <span class="text-sm font-normal text-gray-500 ml-2">
+              (<%= @brand.comments.count %>件)
+            </span>
+          </h2>
+          
+          <!-- コメント投稿フォーム -->
+          <% if current_account || Rails.env.development? %>
+            <div class="mb-6 pl-3">
+              <%= render 'comments/form', comment: Comment.new, commentable: @brand %>
+            </div>
+          <% else %>
+            <div class="bg-gray-50 rounded-lg p-4 mb-6 ml-3">
+              <p class="text-gray-600 text-center">
+                コメントを投稿するには
+                <%= link_to "ログイン", "/login", class: "text-blue-600 hover:text-blue-800" %>
+                が必要です
+              </p>
+            </div>
+          <% end %>
+
+          <!-- 最新コメント表示（3件まで） -->
+          <div class="pl-3">
+            <% recent_comments = @brand.comments.includes(:account).recent.limit(3) %>
+            <% if recent_comments.any? %>
+              <div class="space-y-4 mb-4">
+                <% recent_comments.each do |comment| %>
+                  <%= render 'comments/comment', comment: comment, commentable: @brand %>
+                <% end %>
+              </div>
+              
+              <% if @brand.comments.count > 3 %>
+                <div class="text-center">
+                  <%= link_to brand_comments_path(@brand), 
+                        class: "inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 rounded-md transition-colors" do %>
+                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.432l-3.652 3.652A1 1 0 011.5 21.5l.5-.5 3.652-3.652A8.959 8.959 0 011 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+                    </svg>
+                    すべてのコメントを見る (<%= @brand.comments.count %>件)
+                  <% end %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="text-center py-8">
+                <div class="text-gray-400 mb-4">
+                  <svg class="mx-auto h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.432l-3.652 3.652A1 1 0 011.5 21.5l.5-.5 3.652-3.652A8.959 8.959 0 011 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+                  </svg>
+                </div>
+                <p class="text-gray-600">まだコメントがありません</p>
+                <% if current_account %>
+                  <p class="text-sm text-gray-500 mt-1">最初のコメントを投稿してみませんか？</p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
       </div>
 
     </div>

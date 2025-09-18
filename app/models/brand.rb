@@ -7,6 +7,7 @@ class Brand < ApplicationRecord
   has_many :award_winners, as: :winner, dependent: :destroy
   has_many :awards, through: :award_winners
   has_many :ec_listings, as: :listable, dependent: :destroy
+  has_many :comments, as: :commentable, dependent: :destroy
 
   before_save :fill_detail
 
@@ -132,6 +133,10 @@ class Brand < ApplicationRecord
       order(:id)
     end
   }
+
+  def comments_count
+    comments.count
+  end
 
   private
 

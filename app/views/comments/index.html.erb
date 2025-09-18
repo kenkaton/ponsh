@@ -1,0 +1,64 @@
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-gray-900">
+        コメント
+        <span class="text-sm font-normal text-gray-500 ml-2">
+          (<%= @commentable.comments_count %>件)
+        </span>
+      </h2>
+      <%= link_to @commentable, class: "text-blue-600 hover:text-blue-800 text-sm" do %>
+        ← <%= @commentable.name %>に戻る
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Comment Form for Logged In Users -->
+  <% if current_account && @comment %>
+    <div class="mb-8">
+      <%= render 'comments/form', comment: @comment, commentable: @commentable %>
+    </div>
+  <% elsif !current_account %>
+    <div class="bg-gray-50 rounded-lg p-4 mb-8 text-center">
+      <p class="text-gray-600">
+        コメントを投稿するには
+        <%= link_to "ログイン", "/login", class: "text-blue-600 hover:text-blue-800" %>
+        が必要です
+      </p>
+    </div>
+  <% end %>
+
+  <!-- Comments List -->
+  <div class="space-y-4">
+    <% if @comments.any? %>
+      <% @comments.each do |comment| %>
+        <%= render 'comments/comment', comment: comment, commentable: @commentable %>
+      <% end %>
+      
+      <!-- Pagination -->
+      <% if respond_to?(:pagy_nav) %>
+        <div class="mt-8 flex justify-center">
+          <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.432l-3.652 3.652A1 1 0 011.5 21.5l.5-.5 3.652-3.652A8.959 8.959 0 011 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">まだコメントがありません</h3>
+        <p class="text-gray-600">
+          <% if current_account %>
+            最初のコメントを投稿してみませんか？
+          <% else %>
+            <%= link_to "ログイン", "/login", class: "text-blue-600 hover:text-blue-800" %>
+            してコメントを投稿してみませんか？
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account: one
+  commentable: one (Brand)
+  body: "これは素晴らしい日本酒です。"
+  created_at: <%= 2.hours.ago %>
+
+two:
+  account: two
+  commentable: one (Brand)
+  body: "とても美味しくて感動しました。リピート確定です！"
+  created_at: <%= 1.hour.ago %>
+  edited_at: <%= 10.minutes.ago %>
+
+three:
+  account: one
+  commentable: two (Brand)
+  body: "フルーティーな香りが最高です。"
+  created_at: <%= 30.minutes.ago %>

@@ -1,0 +1,81 @@
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+  <%= form_with model: [commentable, comment], local: true, class: "space-y-4" do |form| %>
+    <!-- Comment Body -->
+    <div>
+      <%= form.label :body, "コメント", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.text_area :body, 
+            placeholder: "#{commentable.name}についてのコメントを入力してください...",
+            rows: 4,
+            maxlength: 1000,
+            class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y",
+            data: { 
+              counter_target: "textarea",
+              action: "input->counter#update"
+            } %>
+      
+      <!-- Character Counter -->
+      <div class="flex justify-between items-center mt-2">
+        <div class="text-xs text-gray-500">
+          <span data-counter-target="count">0</span> / 1000文字
+        </div>
+        <% if comment.errors.any? %>
+          <div class="text-xs text-red-600">
+            <%= comment.errors.full_messages.join(", ") %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-between">
+      <div class="text-xs text-gray-500">
+        <% if comment.persisted? %>
+          編集中: <%= comment.created_at.strftime("%Y年%m月%d日 %H:%M") %>投稿
+        <% else %>
+          新規コメント
+        <% end %>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <% if comment.persisted? %>
+          <%= link_to "キャンセル", commentable, 
+                class: "px-3 py-2 text-sm text-gray-600 hover:text-gray-800" %>
+        <% end %>
+        
+        <%= form.submit (comment.persisted? ? "更新" : "投稿"), 
+              class: "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
+              data: { 
+                disable_with: (comment.persisted? ? "更新中..." : "投稿中...")
+              } %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Stimulus Controller for Character Counter -->
+<script>
+  // Simple character counter without Stimulus for now
+  document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('[data-counter-target="textarea"]');
+    const counter = document.querySelector('[data-counter-target="count"]');
+    
+    if (textarea && counter) {
+      function updateCounter() {
+        const count = textarea.value.length;
+        counter.textContent = count;
+        
+        // Color coding
+        if (count > 900) {
+          counter.className = 'text-red-600 font-medium';
+        } else if (count > 800) {
+          counter.className = 'text-yellow-600 font-medium';
+        } else {
+          counter.className = '';
+        }
+      }
+      
+      textarea.addEventListener('input', updateCounter);
+      updateCounter(); // Initial count
+    }
+  });
+</script>

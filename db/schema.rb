@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_230543) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_11_053641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -114,6 +114,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_230543) do
     t.index ["last_ec_api_check_at"], name: "index_brands_on_last_ec_api_check_at"
     t.index ["last_ec_api_empty"], name: "index_brands_on_last_ec_api_empty"
     t.index ["public_id"], name: "index_brands_on_public_id", unique: true
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "account_id", null: false, comment: "コメント投稿者"
+    t.string "commentable_type", null: false
+    t.bigint "commentable_id", null: false, comment: "コメント対象（Brand, Product等）"
+    t.text "body", null: false, comment: "コメント本文"
+    t.datetime "edited_at", comment: "最終編集日時"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "created_at"], name: "index_comments_on_account_and_created_at"
+    t.index ["account_id"], name: "index_comments_on_account_id"
+    t.index ["commentable_type", "commentable_id", "created_at"], name: "index_comments_on_commentable_and_created_at"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -268,6 +282,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_230543) do
   add_foreign_key "award_winners", "awards"
   add_foreign_key "awards", "contest_editions"
   add_foreign_key "brands", "companies"
+  add_foreign_key "comments", "accounts"
   add_foreign_key "contest_editions", "contests"
   add_foreign_key "products", "brands"
 end
