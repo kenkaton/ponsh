@@ -7,7 +7,7 @@ class CompaniesTest < ApplicationSystemTestCase
 
   test "should show company" do
     visit company_url(@company)
-    assert_selector "h1", text: @company.name
+    assert_selector "h2", text: @company.name
     assert_text @company.name
   end
 end
