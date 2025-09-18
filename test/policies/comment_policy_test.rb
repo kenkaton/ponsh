@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class CommentPolicyTest < ActiveSupport::TestCase
   def setup
@@ -18,7 +18,7 @@ class CommentPolicyTest < ActiveSupport::TestCase
     # Logged in user
     assert CommentPolicy.new(@user, @comment).show?
     assert CommentPolicy.new(@user, @other_comment).show?
-    
+
     # Guest user (nil)
     assert CommentPolicy.new(nil, @comment).show?
     assert CommentPolicy.new(nil, @other_comment).show?
@@ -27,7 +27,7 @@ class CommentPolicyTest < ActiveSupport::TestCase
   def test_create_requires_logged_in_user
     # Logged in user can create
     assert CommentPolicy.new(@user, Comment.new).create?
-    
+
     # Guest user cannot create
     assert_not CommentPolicy.new(nil, Comment.new).create?
   end
@@ -35,10 +35,10 @@ class CommentPolicyTest < ActiveSupport::TestCase
   def test_update_allows_only_comment_owner
     # Owner can update own comment
     assert CommentPolicy.new(@user, @comment).update?
-    
+
     # Other users cannot update
     assert_not CommentPolicy.new(@other_user, @comment).update?
-    
+
     # Guest user cannot update
     assert_not CommentPolicy.new(nil, @comment).update?
   end
@@ -46,10 +46,10 @@ class CommentPolicyTest < ActiveSupport::TestCase
   def test_destroy_allows_only_comment_owner
     # Owner can destroy own comment
     assert CommentPolicy.new(@user, @comment).destroy?
-    
+
     # Other users cannot destroy
     assert_not CommentPolicy.new(@other_user, @comment).destroy?
-    
+
     # Guest user cannot destroy
     assert_not CommentPolicy.new(nil, @comment).destroy?
   end
