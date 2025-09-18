@@ -1,5 +1,15 @@
-<div class="flex-1 space-y-4">
+<% content_for :auth_title, "ログイン" %>
+<% content_for :auth_footer do %>
+  <div class="text-sm text-gray-600">
+    <%= link_to "アカウントを作成", rodauth.create_account_path, class: "text-blue-600 hover:text-blue-800" %>
+    <% if rodauth.features.include?(:reset_password) %>
+      | <%= link_to "パスワードを忘れた方", rodauth.reset_password_request_path, class: "text-blue-600 hover:text-blue-800" %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "auth_layout" do %>
   <%== rodauth.login_form_header %>
   <%= render "login_form" %>
   <%== rodauth.login_form_footer %>
-</div>
+<% end %>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <%= render_gtm_head %>
+    <title><%= content_for(:title) || "Ponsh - 認証" %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="turbo-prefetch" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body data-controller="gtm" class="flex flex-col min-h-screen bg-gray-50" data-action="turbo:load->gtm#pageView">
+    <%= render_gtm_body %>
+    <%= render 'shared/header' %>
+
+    <!-- 中央配置のメインコンテナ -->
+    <main class="flex-grow flex items-center justify-center px-4 py-12 mt-16">
+      <div class="w-full max-w-md">
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="mt-auto py-6 bg-gray-100">
+      <div class="container mx-auto px-5">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
+          <div>
+            <p class="text-gray-600">&copy; <%= Date.today.year %> Ponsh. All rights reserved.</p>
+          </div>
+          <div class="flex space-x-6">
+            <%= link_to "利用規約", page_path("terms"), class: "text-gray-600 hover:text-gray-900" %>
+            <%= link_to "プライバシーポリシー", page_path("privacy"), class: "text-gray-600 hover:text-gray-900" %>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

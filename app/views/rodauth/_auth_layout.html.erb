@@ -1,0 +1,17 @@
+<div class="bg-white shadow-lg rounded-lg p-8">
+  <% if content_for?(:auth_title) %>
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">
+        <%= yield :auth_title %>
+      </h1>
+    </div>
+  <% end %>
+  
+  <%= yield %>
+  
+  <% if content_for?(:auth_footer) %>
+    <div class="mt-6 text-center">
+      <%= yield :auth_footer %>
+    </div>
+  <% end %>
+</div>
