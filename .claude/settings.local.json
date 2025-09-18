@@ -26,7 +26,8 @@
       "Bash(mkdir:*)",
       "Bash(bundle install)",
       "Bash(rails generate:*)",
-      "Bash(rails test:*)"
+      "Bash(rails test:*)",
+      "WebFetch(domain:sauna-ikitai.com)"
     ],
     "deny": []
   }

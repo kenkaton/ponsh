@@ -1,6 +1,15 @@
-import { Controller } from "@hotwired/stimulus"
+import BaseController from "controllers/base_controller"
 
-export default class extends Controller {
+/**
+ * GTMController - Google Tag Manager統合コントローラー
+ *
+ * 機能:
+ * - イベント追跡（クリック、ページビュー、検索）
+ * - カスタムイベントデータの送信
+ * - アイテム表示の追跡
+ * - GTM dataLayerの管理
+ */
+export default class extends BaseController {
   static values = {
     event: String,
     category: String,
@@ -11,42 +20,33 @@ export default class extends Controller {
   }
 
   connect() {
-    if (!window.dataLayer) {
-      window.dataLayer = []
-    }
+    this.initializeDataLayer()
+    this.logDebug('GTM controller initialized')
   }
 
+  /**
+   * カスタムイベントを追跡
+   */
   track() {
-    if (!window.dataLayer) {
-      console.warn('GTM dataLayer not found')
-      return
-    }
+    if (!this.isDataLayerAvailable()) return
 
-    const eventData = {
+    const eventData = this.buildEventData({
       event: this.eventValue || 'custom_event',
       event_category: this.categoryValue,
       event_action: this.actionValue,
       event_label: this.labelValue,
       value: this.valueValue,
       ...this.customValue
-    }
+    })
 
-    // Remove undefined values
-    Object.keys(eventData).forEach(key =>
-      eventData[key] === undefined && delete eventData[key]
-    )
-
-    console.log('GTM Event:', eventData)
-    window.dataLayer.push(eventData)
-
-    // Don't prevent default - let the link work normally
+    this.pushToDataLayer(eventData, 'GTM Event')
   }
 
+  /**
+   * ページビューイベントを追跡
+   */
   pageView() {
-    if (!window.dataLayer) {
-      console.warn('GTM dataLayer not found')
-      return
-    }
+    if (!this.isDataLayerAvailable()) return
 
     const pageData = {
       event: 'page_view',
@@ -55,40 +55,88 @@ export default class extends Controller {
       page_location: window.location.href
     }
 
-    console.log('GTM Page View:', pageData)
-    window.dataLayer.push(pageData)
+    this.pushToDataLayer(pageData, 'GTM Page View')
   }
 
+  /**
+   * 検索イベントを追跡
+   * @param {string} query - 検索クエリ
+   */
   search(query) {
-    if (!window.dataLayer) {
-      console.warn('GTM dataLayer not found')
-      return
-    }
+    if (!this.isDataLayerAvailable()) return
 
+    const searchInput = this.findElement('input[type="search"]')
     const searchData = {
       event: 'search',
-      search_term: query || this.element.querySelector('input[type="search"]')?.value
+      search_term: query || (searchInput && searchInput.value)
     }
 
-    console.log('GTM Search:', searchData)
-    window.dataLayer.push(searchData)
+    this.pushToDataLayer(searchData, 'GTM Search')
   }
 
-  viewItem(itemData) {
-    if (!window.dataLayer) {
-      console.warn('GTM dataLayer not found')
-      return
-    }
+  /**
+   * アイテム表示イベントを追跡
+   * @param {Object} itemData - アイテムデータ
+   */
+  viewItem(itemData = {}) {
+    if (!this.isDataLayerAvailable()) return
 
-    const viewData = {
+    const viewData = this.buildEventData({
       event: 'view_item',
-      item_name: itemData.name || this.element.dataset.itemName,
-      item_id: itemData.id || this.element.dataset.itemId,
-      item_category: itemData.category || this.element.dataset.itemCategory,
+      item_name: itemData.name || this.getDataAttribute(this.element, 'itemName'),
+      item_id: itemData.id || this.getDataAttribute(this.element, 'itemId'),
+      item_category: itemData.category || this.getDataAttribute(this.element, 'itemCategory'),
       ...this.customValue
-    }
+    })
 
-    console.log('GTM View Item:', viewData)
-    window.dataLayer.push(viewData)
+    this.pushToDataLayer(viewData, 'GTM View Item')
+  }
+
+  // ヘルパーメソッド
+
+  /**
+   * dataLayerを初期化
+   */
+  initializeDataLayer() {
+    if (!window.dataLayer) {
+      window.dataLayer = []
+    }
+  }
+
+  /**
+   * dataLayerが利用可能かチェック
+   * @returns {boolean} 利用可能かどうか
+   */
+  isDataLayerAvailable() {
+    if (!window.dataLayer) {
+      this.logError('GTM dataLayer not found')
+      return false
+    }
+    return true
+  }
+
+  /**
+   * イベントデータを構築（未定義値を除去）
+   * @param {Object} data - 元データ
+   * @returns {Object} クリーンなデータ
+   */
+  buildEventData(data) {
+    const cleanData = { ...data }
+    Object.keys(cleanData).forEach(key => {
+      if (cleanData[key] === undefined) {
+        delete cleanData[key]
+      }
+    })
+    return cleanData
+  }
+
+  /**
+   * dataLayerにデータをプッシュ
+   * @param {Object} data - 送信データ
+   * @param {string} eventType - イベントタイプ（ログ用）
+   */
+  pushToDataLayer(data, eventType) {
+    this.logDebug(`${eventType}:`, data)
+    window.dataLayer.push(data)
   }
 }

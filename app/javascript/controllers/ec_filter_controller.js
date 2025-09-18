@@ -1,28 +1,54 @@
-import { Controller } from "@hotwired/stimulus"
+import BaseController from "controllers/base_controller"
 
-export default class extends Controller {
+/**
+ * EcFilterController - ECサイト風フィルタリングシステム
+ *
+ * 機能:
+ * - 複数条件でのアイテムフィルタリング
+ * - 価格範囲での絞り込み
+ * - ソート機能（価格、評価、更新日時など）
+ * - リアルタイム結果数表示
+ * - フィルタのクリア機能
+ */
+export default class extends BaseController {
   static targets = ["filter", "item", "itemContainer", "resultCount", "noResults", "priceRange", "priceDisplay"]
 
   connect() {
     this.updateResults()
     this.updatePriceDisplay()
+    this.logDebug('EcFilter initialized')
   }
 
+  /**
+   * フィルタ適用イベントハンドラー
+   * @param {Event} event - フィルタイベント
+   */
   filter(event) {
     event.preventDefault()
     this.updateResults()
   }
 
+  /**
+   * 価格フィルタ適用イベントハンドラー
+   * @param {Event} event - 価格変更イベント
+   */
   filterByPrice(event) {
     this.updatePriceDisplay()
     this.updateResults()
   }
 
+  /**
+   * ソート適用イベントハンドラー
+   * @param {Event} event - ソート変更イベント
+   */
   sortItems(event) {
     const sortType = event.target.value
     this.sortItemsByType(sortType)
   }
 
+  /**
+   * フィルタ結果の更新
+   */
   updateResults() {
     const activeFilters = this.getActiveFilters()
     const maxPrice = this.getPriceFilter()
@@ -32,28 +58,27 @@ export default class extends Controller {
       const isVisible = this.shouldShowItem(item, activeFilters, maxPrice)
 
       if (isVisible) {
-        item.classList.remove("hidden")
+        this.showElement(item, this.constructor.VISIBLE_CLASS)
         visibleCount++
       } else {
-        item.classList.add("hidden")
+        this.hideElement(item, this.constructor.VISIBLE_CLASS)
       }
     })
 
-    // 結果数表示の更新
-    if (this.hasResultCountTarget) {
-      this.resultCountTarget.textContent = visibleCount
-    }
+    this.updateResultCount(visibleCount)
+    this.updateNoResultsDisplay(visibleCount)
 
-    // 結果なし表示の制御
-    if (this.hasNoResultsTarget) {
-      if (visibleCount === 0) {
-        this.noResultsTarget.classList.remove("hidden")
-      } else {
-        this.noResultsTarget.classList.add("hidden")
-      }
+    // ログは結果が変わった時のみ出力
+    if (this._lastVisibleCount !== visibleCount) {
+      this.logDebug(`Filter results updated: ${visibleCount} items visible`)
+      this._lastVisibleCount = visibleCount
     }
   }
 
+  /**
+   * アクティブなフィルタを取得
+   * @returns {Object} フィルタオブジェクト
+   */
   getActiveFilters() {
     const filters = {
       volume: [],
@@ -64,8 +89,8 @@ export default class extends Controller {
 
     this.filterTargets.forEach((filter) => {
       if (filter.checked) {
-        const filterType = filter.dataset.filterType
-        const filterValue = filter.dataset.filterValue
+        const filterType = this.getDataAttribute(filter, 'filterType')
+        const filterValue = this.getDataAttribute(filter, 'filterValue')
 
         if (filters[filterType]) {
           filters[filterType].push(filterValue)
@@ -76,72 +101,49 @@ export default class extends Controller {
     return filters
   }
 
+  /**
+   * アイテムを表示すべきかどうかを判定
+   * @param {Element} item - アイテム要素
+   * @param {Object} filters - フィルタオブジェクト
+   * @param {number} maxPrice - 最大価格
+   * @returns {boolean} 表示すべきかどうか
+   */
   shouldShowItem(item, filters, maxPrice) {
+    // 価格フィルタチェック
+    if (!this.checkPriceFilter(item, maxPrice)) {
+      return false
+    }
+
     // 各フィルタタイプでAND条件、同一タイプ内でOR条件
+    const filterChecks = [
+      () => this.checkFilterType(item, filters.volume, 'volume'),
+      () => this.checkFilterType(item, filters.rice, 'rice'),
+      () => this.checkFilterType(item, filters.platform, 'platform'),
+      () => this.checkFilterType(item, filters.sakeType, 'sakeType')
+    ]
 
-    // 価格フィルタ
-    if (maxPrice) {
-      const itemPrice = parseInt(item.dataset.price, 10)
-      if (itemPrice > maxPrice) {
-        return false
-      }
-    }
-
-    // 内容量フィルタ
-    if (filters.volume.length > 0) {
-      const itemVolume = item.dataset.volume
-      if (!filters.volume.includes(itemVolume)) {
-        return false
-      }
-    }
-
-    // 原料米フィルタ
-    if (filters.rice.length > 0) {
-      const itemRice = item.dataset.rice
-      if (!itemRice || !filters.rice.includes(itemRice)) {
-        return false
-      }
-    }
-
-    // プラットフォームフィルタ
-    if (filters.platform.length > 0) {
-      const itemPlatform = item.dataset.platform
-      if (!filters.platform.includes(itemPlatform)) {
-        return false
-      }
-    }
-
-    // 酒類分類フィルタ
-    if (filters.sakeType.length > 0) {
-      const itemSakeType = item.dataset.sakeType
-      if (!itemSakeType || !filters.sakeType.includes(itemSakeType)) {
-        return false
-      }
-    }
-
-    return true
+    return filterChecks.every(check => check())
   }
 
+  /**
+   * フィルタカウンターの更新
+   */
   updateCounters() {
-    // 各フィルタの該当件数を更新
+    if (!this.hasCounterTargets) return
+
     this.counterTargets.forEach((counter) => {
-      const filterType = counter.dataset.counterType
-      const filterValue = counter.dataset.counterValue
+      const filterType = this.getDataAttribute(counter, 'counterType')
+      const filterValue = this.getDataAttribute(counter, 'counterValue')
 
-      let count = 0
-      this.itemTargets.forEach((item) => {
-        if (!item.classList.contains("hidden")) {
-          if (filterType === "volume" && item.dataset.volume === filterValue) count++
-          if (filterType === "rice" && item.dataset.rice === filterValue) count++
-          if (filterType === "platform" && item.dataset.platform === filterValue) count++
-          if (filterType === "sakeType" && item.dataset.sakeType === filterValue) count++
-        }
-      })
-
+      const count = this.countVisibleItemsForFilter(filterType, filterValue)
       counter.textContent = `(${count})`
     })
   }
 
+  /**
+   * 価格フィルタの値を取得
+   * @returns {number|null} 最大価格
+   */
   getPriceFilter() {
     if (this.hasPriceRangeTarget) {
       return parseInt(this.priceRangeTarget.value, 10)
@@ -149,6 +151,9 @@ export default class extends Controller {
     return null
   }
 
+  /**
+   * 価格表示の更新
+   */
   updatePriceDisplay() {
     if (this.hasPriceRangeTarget && this.hasPriceDisplayTarget) {
       const price = parseInt(this.priceRangeTarget.value, 10)
@@ -156,63 +161,166 @@ export default class extends Controller {
     }
   }
 
+  /**
+   * 指定されたタイプでアイテムをソート
+   * @param {string} sortType - ソートタイプ
+   */
   sortItemsByType(sortType) {
     const container = this.hasItemContainerTarget ? this.itemContainerTarget : this.element
     const items = Array.from(this.itemTargets)
 
-    items.sort((a, b) => {
-      switch (sortType) {
-        case 'price-asc':
-          return parseInt(a.dataset.price, 10) - parseInt(b.dataset.price, 10)
-        case 'price-desc':
-          return parseInt(b.dataset.price, 10) - parseInt(a.dataset.price, 10)
-        case 'value':
-          return (parseInt(b.dataset.valueScore, 10) || 0) - (parseInt(a.dataset.valueScore, 10) || 0)
-        case 'review':
-          const aReview = parseFloat(a.dataset.reviewAverage) || 0
-          const bReview = parseFloat(b.dataset.reviewAverage) || 0
-          return bReview - aReview
-        case 'recent':
-        default:
-          const aTime = parseInt(a.dataset.updatedAt, 10) || 0
-          const bTime = parseInt(b.dataset.updatedAt, 10) || 0
-          return bTime - aTime
-      }
-    })
+    const sortFunctions = {
+      'price-asc': (a, b) => this.getNumericData(a, 'price') - this.getNumericData(b, 'price'),
+      'price-desc': (a, b) => this.getNumericData(b, 'price') - this.getNumericData(a, 'price'),
+      'value': (a, b) => this.getNumericData(b, 'valueScore') - this.getNumericData(a, 'valueScore'),
+      'review': (a, b) => this.getFloatData(b, 'reviewAverage') - this.getFloatData(a, 'reviewAverage'),
+      'recent': (a, b) => this.getNumericData(b, 'updatedAt') - this.getNumericData(a, 'updatedAt')
+    }
+
+    const sortFunction = sortFunctions[sortType] || sortFunctions['recent']
+    items.sort(sortFunction)
 
     items.forEach(item => container.appendChild(item))
+    this.logDebug(`Items sorted by: ${sortType}`)
   }
 
+  /**
+   * すべてのフィルタをクリア
+   * @param {Event} event - クリアイベント
+   */
   clearFilters(event) {
     event.preventDefault()
 
+    // チェックボックスフィルタをクリア
     this.filterTargets.forEach((filter) => {
       filter.checked = false
     })
 
     // 価格範囲をリセット
+    this.resetPriceRange()
+
+    // ソートをリセット
+    this.resetSortOrder()
+
+    this.updateResults()
+    this.logDebug('All filters cleared')
+  }
+
+  /**
+   * フィルタパネルの表示切り替え
+   * @param {Event} event - トグルイベント
+   */
+  toggleFilterPanel(event) {
+    event.preventDefault()
+    const panel = this.findElement('.filter-panel')
+
+    if (panel) {
+      this.toggleElement(panel)
+    }
+  }
+
+  // ヘルパーメソッド
+
+  /**
+   * 価格フィルタのチェック
+   * @param {Element} item - アイテム要素
+   * @param {number} maxPrice - 最大価格
+   * @returns {boolean} 価格条件を満たすかどうか
+   */
+  checkPriceFilter(item, maxPrice) {
+    if (!maxPrice) return true
+    const itemPrice = this.getNumericData(item, 'price')
+    return itemPrice <= maxPrice
+  }
+
+  /**
+   * 特定のフィルタタイプのチェック
+   * @param {Element} item - アイテム要素
+   * @param {Array} filterValues - フィルタ値の配列
+   * @param {string} dataKey - データキー
+   * @returns {boolean} フィルタ条件を満たすかどうか
+   */
+  checkFilterType(item, filterValues, dataKey) {
+    if (filterValues.length === 0) return true
+    const itemValue = this.getDataAttribute(item, dataKey)
+    return itemValue && filterValues.includes(itemValue)
+  }
+
+  /**
+   * 数値データを安全に取得
+   * @param {Element} element - 対象要素
+   * @param {string} key - データキー
+   * @returns {number} 数値データ
+   */
+  getNumericData(element, key) {
+    return parseInt(this.getDataAttribute(element, key, '0'), 10) || 0
+  }
+
+  /**
+   * 浮動小数点データを安全に取得
+   * @param {Element} element - 対象要素
+   * @param {string} key - データキー
+   * @returns {number} 浮動小数点データ
+   */
+  getFloatData(element, key) {
+    return parseFloat(this.getDataAttribute(element, key, '0')) || 0
+  }
+
+  /**
+   * 結果数表示の更新
+   * @param {number} count - 表示件数
+   */
+  updateResultCount(count) {
+    if (this.hasResultCountTarget) {
+      this.resultCountTarget.textContent = count
+    }
+  }
+
+  /**
+   * 結果なし表示の更新
+   * @param {number} count - 表示件数
+   */
+  updateNoResultsDisplay(count) {
+    if (!this.hasNoResultsTarget) return
+
+    if (count === 0) {
+      this.showElement(this.noResultsTarget)
+    } else {
+      this.hideElement(this.noResultsTarget)
+    }
+  }
+
+  /**
+   * 表示中のアイテム数をカウント
+   * @param {string} filterType - フィルタタイプ
+   * @param {string} filterValue - フィルタ値
+   * @returns {number} 該当件数
+   */
+  countVisibleItemsForFilter(filterType, filterValue) {
+    return this.itemTargets.filter(item => {
+      if (item.classList.contains(this.constructor.HIDDEN_CLASS)) return false
+      return this.getDataAttribute(item, filterType) === filterValue
+    }).length
+  }
+
+  /**
+   * 価格範囲をリセット
+   */
+  resetPriceRange() {
     if (this.hasPriceRangeTarget) {
       this.priceRangeTarget.value = this.priceRangeTarget.max
       this.updatePriceDisplay()
     }
+  }
 
-    // ソートをリセット
-    const sortSelect = this.element.querySelector('select')
+  /**
+   * ソート順をリセット
+   */
+  resetSortOrder() {
+    const sortSelect = this.findElement('select')
     if (sortSelect) {
       sortSelect.value = 'recent'
       this.sortItemsByType('recent')
-    }
-
-    this.updateResults()
-  }
-
-  toggleFilterPanel(event) {
-    event.preventDefault()
-    const panel = this.element.querySelector(".filter-panel")
-
-    if (panel) {
-      panel.classList.toggle("hidden")
-      panel.classList.toggle("block")
     }
   }
 }
