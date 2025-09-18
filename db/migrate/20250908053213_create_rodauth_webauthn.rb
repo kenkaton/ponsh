@@ -6,7 +6,7 @@ class CreateRodauthWebauthn < ActiveRecord::Migration[8.0]
       t.foreign_key :accounts, column: :id
       t.string :webauthn_id, null: false
     end
-    create_table :account_webauthn_keys, primary_key: [:account_id, :webauthn_id] do |t|
+    create_table :account_webauthn_keys, primary_key: [ :account_id, :webauthn_id ] do |t|
       t.references :account, foreign_key: true
       t.string :webauthn_id
       t.string :public_key, null: false
