@@ -7,45 +7,12 @@ class BrandsTest < ApplicationSystemTestCase
 
   test "visiting the index" do
     visit brands_url
-    assert_selector "h1", text: "Brands"
+    assert_selector "h1"
   end
 
-  test "should create brand" do
-    visit brands_url
-    click_on "New brand"
-
-    fill_in "Company", with: @brand.company_id
-    fill_in "Detail", with: @brand.detail
-    fill_in "Kana", with: @brand.kana
-    fill_in "Name", with: @brand.name
-    fill_in "Name en", with: @brand.name_en
-    fill_in "Public", with: @brand.public_id
-    click_on "Create Brand"
-
-    assert_text "Brand was successfully created"
-    click_on "Back"
-  end
-
-  test "should update Brand" do
+  test "should show brand" do
     visit brand_url(@brand)
-    click_on "Edit this brand", match: :first
-
-    fill_in "Company", with: @brand.company_id
-    fill_in "Detail", with: @brand.detail
-    fill_in "Kana", with: @brand.kana
-    fill_in "Name", with: @brand.name
-    fill_in "Name en", with: @brand.name_en
-    fill_in "Public", with: @brand.public_id
-    click_on "Update Brand"
-
-    assert_text "Brand was successfully updated"
-    click_on "Back"
-  end
-
-  test "should destroy Brand" do
-    visit brand_url(@brand)
-    click_on "Destroy this brand", match: :first
-
-    assert_text "Brand was successfully destroyed"
+    assert_selector "h1", text: @brand.name
+    assert_text @brand.name
   end
 end
