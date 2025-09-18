@@ -1,0 +1,111 @@
+<% content_for :title, "#{@commentable.name} - コメント投稿" %>
+
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <%= link_to @commentable, class: "inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2" do %>
+      <svg class="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      <%= @commentable.name %>に戻る
+    <% end %>
+    
+    <h1 class="text-2xl font-bold text-gray-900">コメント投稿</h1>
+    <p class="text-gray-600 mt-1">「<%= @commentable.name %>」についてのコメントを投稿します</p>
+  </div>
+
+  <!-- Brand Preview -->
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div class="flex items-center">
+      <% if @commentable.primary_image.present? %>
+        <img src="<%= @commentable.primary_image %>" 
+             alt="<%= @commentable.name %>"
+             class="w-12 h-12 rounded-md object-contain bg-white border mr-4"
+             loading="lazy">
+      <% end %>
+      <div>
+        <h2 class="font-medium text-gray-900"><%= @commentable.name %></h2>
+        <% if @commentable.respond_to?(:kana) && @commentable.kana.present? %>
+          <p class="text-sm text-gray-500"><%= @commentable.kana %></p>
+        <% end %>
+        <% if @commentable.company.present? %>
+          <p class="text-xs text-gray-400"><%= @commentable.company.name %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment Form -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <%= form_with model: [@commentable, @comment], local: true, class: "space-y-4" do |form| %>
+        <!-- Comment Body -->
+        <div>
+          <%= form.label :body, "コメント", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.text_area :body, 
+                placeholder: "#{@commentable.name}についてのコメントを入力してください...",
+                rows: 6,
+                maxlength: 1000,
+                class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y",
+                data: { 
+                  counter_target: "textarea",
+                  action: "input->counter#update"
+                } %>
+          
+          <!-- Character Counter -->
+          <div class="flex justify-between items-center mt-2">
+            <div class="text-xs text-gray-500">
+              <span data-counter-target="count">0</span> / 1000文字
+            </div>
+            <% if @comment.errors.any? %>
+              <div class="text-xs text-red-600">
+                <%= @comment.errors.full_messages.join(", ") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+          <%= link_to @commentable, 
+                class: "px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors" do %>
+            キャンセル
+          <% end %>
+          
+          <%= form.submit "投稿する", 
+                class: "px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
+                data: { 
+                  disable_with: "投稿中..."
+                } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Character Counter Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('[data-counter-target="textarea"]');
+    const counter = document.querySelector('[data-counter-target="count"]');
+    
+    if (textarea && counter) {
+      function updateCounter() {
+        const count = textarea.value.length;
+        counter.textContent = count;
+        
+        // Color coding
+        if (count > 900) {
+          counter.className = 'text-red-600 font-medium';
+        } else if (count > 800) {
+          counter.className = 'text-yellow-600 font-medium';
+        } else {
+          counter.className = '';
+        }
+      }
+      
+      textarea.addEventListener('input', updateCounter);
+      updateCounter(); // Initial count
+    }
+  });
+</script>

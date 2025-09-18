@@ -147,25 +147,44 @@
 
         <!-- コメントセクション -->
         <div class="mb-6" id="comments">
-          <h2 class="font-bold text-lg mb-3 border-l-4 border-gray-500 pl-3">
-            コメント
-            <span class="text-sm font-normal text-gray-500 ml-2">
-              (<%= @brand.comments.count %>件)
-            </span>
-          </h2>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-bold text-lg border-l-4 border-gray-500 pl-3">
+              コメント
+              <span class="text-sm font-normal text-gray-500 ml-2">
+                (<%= @brand.comments.count %>件)
+              </span>
+            </h2>
+            <% if current_account %>
+              <%= link_to new_brand_comment_path(@brand), 
+                    class: "inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors" do %>
+                <svg class="mr-1.5 h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke="currentColor" stroke-miterlimit="10">
+                  <line x1="7.23" y1="10.07" x2="16.77" y2="10.07"></line>
+                  <line x1="12" y1="5.3" x2="12" y2="14.84"></line>
+                  <path d="M18.68,1.48H5.32A3.82,3.82,0,0,0,1.5,5.3v9.54a3.82,3.82,0,0,0,3.82,3.82H9.14L12,21.52l2.86-2.86h3.82a3.82,3.82,0,0,0,3.82-3.82V5.3A3.82,3.82,0,0,0,18.68,1.48Z"></path>
+                </svg>
+                投稿
+              <% end %>
+            <% end %>
+          </div>
           
-          <!-- コメント投稿フォーム -->
-          <% if current_account || Rails.env.development? %>
+          <!-- ログイン促進メッセージ（未ログインユーザーのみ） -->
+          <% unless current_account %>
             <div class="mb-6 pl-3">
-              <%= render 'comments/form', comment: Comment.new, commentable: @brand %>
-            </div>
-          <% else %>
-            <div class="bg-gray-50 rounded-lg p-4 mb-6 ml-3">
-              <p class="text-gray-600 text-center">
-                コメントを投稿するには
-                <%= link_to "ログイン", "/login", class: "text-blue-600 hover:text-blue-800" %>
-                が必要です
-              </p>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <p class="text-gray-600 text-center mb-3">
+                  コメントを投稿するにはログインが必要です
+                </p>
+                <div class="flex justify-center space-x-3">
+                  <%= link_to "/login", 
+                        class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors" do %>
+                    ログイン
+                  <% end %>
+                  <%= link_to "/register", 
+                        class: "inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors" do %>
+                    アカウント作成
+                  <% end %>
+                </div>
+              </div>
             </div>
           <% end %>
 
@@ -183,8 +202,11 @@
                 <div class="text-center">
                   <%= link_to brand_comments_path(@brand), 
                         class: "inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 rounded-md transition-colors" do %>
-                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.432l-3.652 3.652A1 1 0 011.5 21.5l.5-.5 3.652-3.652A8.959 8.959 0 011 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+                    <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke="currentColor" stroke-miterlimit="10">
+                      <path d="M1.5,5.3v9.54a3.82,3.82,0,0,0,3.82,3.82H7.23v2.86L13,18.66h5.73a3.82,3.82,0,0,0,3.82-3.82V5.3a3.82,3.82,0,0,0-3.82-3.82H5.32A3.82,3.82,0,0,0,1.5,5.3Z"></path>
+                      <line x1="15.82" y1="10.07" x2="17.73" y2="10.07"></line>
+                      <line x1="11.05" y1="10.07" x2="12.95" y2="10.07"></line>
+                      <line x1="6.27" y1="10.07" x2="8.18" y2="10.07"></line>
                     </svg>
                     すべてのコメントを見る (<%= @brand.comments.count %>件)
                   <% end %>

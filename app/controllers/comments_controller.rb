@@ -16,30 +16,24 @@ class CommentsController < ApplicationController
     authorize @comment
   end
 
+  def new
+    @comment = @commentable.comments.build
+    # Punditが有効な場合のみ認可チェック
+    authorize @comment if respond_to?(:authorize) && ENV["ENABLE_PUNDIT"] == "true"
+  end
+
   def create
     @comment = @commentable.comments.build(comment_params)
-    
-    # 開発環境での認証回避（テスト用）
-    if Rails.env.development? && current_account.nil?
-      # テスト用のアカウントを使用
-      @comment.account = Account.first || Account.create!(
-        email: "test@example.com",
-        display_name: "テストユーザー",
-        status: "verified"
-      )
-    else
-      @comment.account = current_account
-    end
-    
+    @comment.account = current_account
+
     # Punditが有効な場合のみ認可チェック
     authorize @comment if respond_to?(:authorize) && ENV["ENABLE_PUNDIT"] == "true"
 
     if @comment.save
       redirect_to polymorphic_path(@commentable, anchor: "comments"), notice: "コメントを投稿しました。"
     else
-      # エラーの場合はコメントフォームを含む詳細ページを再描画
-      @comments = policy_scope(Comment).for_commentable(@commentable).includes(:account).recent.limit(3)
-      redirect_to polymorphic_path(@commentable, anchor: "comments"), alert: @comment.errors.full_messages.join("、")
+      # エラーの場合はnewページを再描画
+      render :new, status: :unprocessable_entity
     end
   end
 
