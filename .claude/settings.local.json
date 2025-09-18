@@ -22,7 +22,11 @@
       "WebSearch",
       "WebFetch(domain:techracho.bpsinc.jp)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:rodauth.jeremyevans.net)"
+      "WebFetch(domain:rodauth.jeremyevans.net)",
+      "Bash(mkdir:*)",
+      "Bash(bundle install)",
+      "Bash(rails generate:*)",
+      "Bash(rails test:*)"
     ],
     "deny": []
   }

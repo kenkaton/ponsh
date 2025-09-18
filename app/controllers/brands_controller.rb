@@ -6,7 +6,7 @@ class BrandsController < ApplicationController
     @query = params[:query]
 
     # 検索とeager_loadを同時に行い、paginate
-    query_scope = Brand.search(@query)
+    query_scope = policy_scope(Brand).search(@query)
     @pagy, @brands = pagy(query_scope.eager_load(company: [ :address, :contact, :google_map ], ec_listings: []))
 
     # EC listingsの非同期更新をトリガー
@@ -21,6 +21,7 @@ class BrandsController < ApplicationController
 
   # GET /brands/1 or /brands/1.json
   def show
+    authorize @brand
     # ECリスティングはeager_loadされているので、loaded?を使って効率的に確認
     if @brand.ec_listings.loaded?
       stale_listings = @brand.ec_listings.select(&:stale?)
@@ -46,15 +47,18 @@ class BrandsController < ApplicationController
   # GET /brands/new
   def new
     @brand = Brand.new
+    authorize @brand
   end
 
   # GET /brands/1/edit
   def edit
+    authorize @brand
   end
 
   # POST /brands or /brands.json
   def create
     @brand = Brand.new(brand_params)
+    authorize @brand
 
     respond_to do |format|
       if @brand.save
@@ -69,6 +73,7 @@ class BrandsController < ApplicationController
 
   # PATCH/PUT /brands/1 or /brands/1.json
   def update
+    authorize @brand
     respond_to do |format|
       if @brand.update(brand_params)
         format.html { redirect_to @brand, notice: t("common.notice.updated", model: Brand.model_name.human) }
@@ -82,6 +87,7 @@ class BrandsController < ApplicationController
 
   # DELETE /brands/1 or /brands/1.json
   def destroy
+    authorize @brand
     @brand.destroy!
 
     respond_to do |format|

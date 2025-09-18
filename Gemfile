@@ -51,6 +51,9 @@ gem "geocoder"
 # Amazon Product Advertising API
 gem "paapi", "~> 0.1.0"
 
+# Authorization solution
+gem "pundit", "~> 2.3"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

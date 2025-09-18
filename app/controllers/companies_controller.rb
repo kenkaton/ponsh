@@ -3,25 +3,29 @@ class CompaniesController < ApplicationController
 
   # GET /companies or /companies.json
   def index
-    @companies = Company.eager_load(:address, :contact, :google_map).all
+    @companies = policy_scope(Company).eager_load(:address, :contact, :google_map).all
   end
 
   # GET /companies/1 or /companies/1.json
   def show
+    authorize @company
   end
 
   # GET /companies/new
   def new
     @company = Company.new
+    authorize @company
   end
 
   # GET /companies/1/edit
   def edit
+    authorize @company
   end
 
   # POST /companies or /companies.json
   def create
     @company = Company.new(company_params)
+    authorize @company
 
     respond_to do |format|
       if @company.save
@@ -36,6 +40,7 @@ class CompaniesController < ApplicationController
 
   # PATCH/PUT /companies/1 or /companies/1.json
   def update
+    authorize @company
     respond_to do |format|
       if @company.update(company_params)
         format.html { redirect_to @company, notice: t("common.notice.updated", model: Company.model_name.human) }
@@ -49,6 +54,7 @@ class CompaniesController < ApplicationController
 
   # DELETE /companies/1 or /companies/1.json
   def destroy
+    authorize @company
     @company.destroy!
 
     respond_to do |format|
