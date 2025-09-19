@@ -77,6 +77,12 @@ class RodauthMain < Rodauth::Rails::Auth
       db.after_commit { email.deliver_later }
     end
 
+    email_from "noreply@pon.sh"
+
+    create_verify_account_email do
+      RodauthMailer.verify_account(self.class.configuration_name, account_id, verify_account_key_value)
+    end
+
     # ==> Flash
     # Match flash keys with ones already used in the Rails app.
     # flash_notice_key :success # default is :notice
