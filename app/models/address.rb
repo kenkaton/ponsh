@@ -6,7 +6,7 @@ class Address < ApplicationRecord
 
   has_one :google_map, as: :gmappable, dependent: :destroy # ポリモーフィック関連に変更
 
-  after_save :update_or_create_google_map, if: :saved_change_to_any_address_field?
+  # after_save :update_or_create_google_map, if: :saved_change_to_any_address_field?
 
   # 都道府県名を取得するメソッド
   def prefecture_name
